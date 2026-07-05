@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { getSceneById } from '../data/scenes'
 import { getRandomWordByLetter } from '../data/words'
 import { Word } from '../data/types'
-import { speakWord, initSpeech } from '../utils/speech'
+import { speakWord, speakLetter, initSpeech } from '../utils/speech'
 import { useSound } from '../utils/SoundContext'
 import { getRandomLine } from '../data/bunnyLines'
 import { BunnyMood } from '../data/types'
@@ -20,6 +20,7 @@ function ExploreMode() {
   const { soundEnabled } = useSound()
 
   const [currentWord, setCurrentWord] = useState<Word | null>(null)
+  const [currentLetter, setCurrentLetter] = useState<string>('')
   const [bunnyMood, setBunnyMood] = useState<BunnyMood>('idle')
   const [bunnyLine, setBunnyLine] = useState('')
   const [speechReady, setSpeechReady] = useState(false)
@@ -34,18 +35,29 @@ function ExploreMode() {
     initSpeech().then(() => setSpeechReady(true))
   }, [])
 
+  // Play letter sound followed by word sound
+  const playLetterAndWord = useCallback((letter: string, word: Word) => {
+    if (!soundEnabled || !speechReady) return
+
+    speakLetter(letter, () => {
+      // After letter finishes, speak the word after a small delay
+      setTimeout(() => {
+        speakWord(word.text)
+      }, 200)
+    })
+  }, [soundEnabled, speechReady])
+
   const handleKeyPress = useCallback((letter: string) => {
     if (!scene || isTimeUp) return
 
     const word = getRandomWordByLetter(letter, scene.id)
     if (word) {
       setCurrentWord(word)
+      setCurrentLetter(letter)
       setBunnyMood('surprised')
       setBunnyLine(getRandomLine('explore'))
 
-      if (soundEnabled && speechReady) {
-        speakWord(word.text)
-      }
+      playLetterAndWord(letter, word)
 
       // Reset bunny mood after animation
       setTimeout(() => {
@@ -53,7 +65,25 @@ function ExploreMode() {
         setBunnyLine('')
       }, 2000)
     }
-  }, [scene, soundEnabled, speechReady, isTimeUp])
+  }, [scene, soundEnabled, speechReady, isTimeUp, playLetterAndWord])
+
+  // Handle space key to replay sound
+  const handleSpaceKey = useCallback(() => {
+    if (!currentWord || !currentLetter || isTimeUp) return
+    playLetterAndWord(currentLetter, currentWord)
+  }, [currentWord, currentLetter, isTimeUp, playLetterAndWord])
+
+  // Listen for space key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' || e.key === ' ') {
+        e.preventDefault()
+        handleSpaceKey()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleSpaceKey])
 
   const handleBunnyClick = () => {
     if (isTimeUp) {
