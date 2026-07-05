@@ -1,0 +1,51 @@
+.scene-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 8px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  text-align: center;
+  min-height: 120px;
+}
+
+.scene-card:active {
+  transform: scale(0.95);
+  box-shadow: var(--shadow-sm);
+}
+
+.scene-card-emoji {
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+.scene-card-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.scene-card-name-en {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+@media (min-width: 768px) {
+  .scene-card {
+    min-height: 160px;
+    padding: 24px 12px;
+  }
+  .scene-card-emoji {
+    font-size: 56px;
+  }
+  .scene-card-name {
+    font-size: 18px;
+  }
+  .scene-card-name-en {
+    font-size: 13px;
+  }
+}
