@@ -50,6 +50,26 @@ export function formatQuestion(template: string, letter: string): string {
   return template.replace('{letter}', letter.toUpperCase())
 }
 
+// Parse a question template into parts for rendering (to highlight the letter)
+export interface QuestionParts {
+  before: string
+  letter: string
+  after: string
+}
+
+export function parseQuestion(template: string, letter: string): QuestionParts {
+  const upperLetter = letter.toUpperCase()
+  const index = template.indexOf('{letter}')
+  if (index === -1) {
+    return { before: template, letter: '', after: '' }
+  }
+  return {
+    before: template.slice(0, index),
+    letter: upperLetter,
+    after: template.slice(index + '{letter}'.length),
+  }
+}
+
 // Get a random line from a category
 export function getRandomLine(category: keyof BunnyLines): string {
   const lines = bunnyLines[category]

@@ -5,7 +5,7 @@ import { getWordsByScene } from '../data/words'
 import { Word } from '../data/types'
 import { speakLetter, speakWord, speakQuestion, speakPraise, initSpeech } from '../utils/speech'
 import { useSound } from '../utils/SoundContext'
-import { getRandomLine, formatQuestion } from '../data/bunnyLines'
+import { getRandomLine, formatQuestion, parseQuestion } from '../data/bunnyLines'
 import { BunnyMood } from '../data/types'
 import TopBar from '../components/TopBar'
 import Bunny from '../components/Bunny'
@@ -24,7 +24,7 @@ function ListenMode() {
 
   const [currentWord, setCurrentWord] = useState<Word | null>(null)
   const [gameState, setGameState] = useState<GameState>('asking')
-  const [questionText, setQuestionText] = useState('')
+  const [questionTemplate, setQuestionTemplate] = useState('')
   const [showHint, setShowHint] = useState(false)
   const [speechReady, setSpeechReady] = useState(false)
   const questionAskedRef = useRef(false)
@@ -58,18 +58,19 @@ function ListenMode() {
     }
   }, [sceneWords, currentWord, pickNewWord])
 
-  // Set question text immediately when a new word is picked (even without speech)
+  // Set question template immediately when a new word is picked (even without speech)
   useEffect(() => {
     if (currentWord && !questionAskedRef.current && gameState === 'asking') {
       questionAskedRef.current = true
-      const question = formatQuestion(getRandomLine('question'), currentWord.letter)
-      setQuestionText(question)
+      const template = getRandomLine('question')
+      setQuestionTemplate(template)
     }
   }, [currentWord, gameState])
 
   // Speak the question when ready
   useEffect(() => {
-    if (currentWord && speechReady && soundEnabled && questionText && gameState === 'asking') {
+    if (currentWord && speechReady && soundEnabled && questionTemplate && gameState === 'asking') {
+      const questionText = formatQuestion(questionTemplate, currentWord.letter)
       const timer = setTimeout(() => {
         speakQuestion(questionText, () => {
           setTimeout(() => {
@@ -79,13 +80,14 @@ function ListenMode() {
       }, 600)
       return () => clearTimeout(timer)
     }
-  }, [currentWord, speechReady, soundEnabled, questionText, gameState])
+  }, [currentWord, speechReady, soundEnabled, questionTemplate, gameState])
 
   // Replay the full question
   const replayQuestion = useCallback(() => {
     if (!currentWord || !soundEnabled || !speechReady || isTimeUp) return
-    const question = formatQuestion(getRandomLine('question'), currentWord.letter)
-    setQuestionText(question)
+    const template = getRandomLine('question')
+    setQuestionTemplate(template)
+    const question = formatQuestion(template, currentWord.letter)
     speakQuestion(question, () => {
       setTimeout(() => {
         speakLetter(currentWord.letter)
@@ -178,7 +180,25 @@ function ListenMode() {
                 <Bunny mood={bunnyMood} size="small" onClick={handleBunnyClick} />
               </div>
               <div className="question-box">
-                <div className="question-text">{questionText}</div>
+              <div className="question-text">
+                {currentWord && questionTemplate && (() => {
+                  const parts = parseQuestion(questionTemplate, currentWord.letter)
+                  return (
+                    <>
+                      {parts.before}
+                      {parts.letter && (
+                        <span className="question-letter">{parts.letter}</span>
+                      )}
+                      {parts.after}
+                    </>
+                  )
+                })()}
+              </div>
+              {currentWord && questionTemplate && !questionTemplate.includes('{letter}') && (
+                <div className="question-big-letter">
+                  {currentWord.letter.toUpperCase()}
+                </div>
+              )}
                 <div className="question-buttons">
                   <button className="replay-btn" onClick={replayQuestion} aria-label="Replay question">
                     🔊 Play again

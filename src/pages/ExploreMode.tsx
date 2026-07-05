@@ -40,10 +40,10 @@ function ExploreMode() {
     if (!soundEnabled || !speechReady) return
 
     speakLetter(letter, () => {
-      // After letter finishes, speak the word after a small delay
+      // After letter finishes, speak the word quickly
       setTimeout(() => {
         speakWord(word.text)
-      }, 200)
+      }, 100)
     })
   }, [soundEnabled, speechReady])
 

@@ -205,42 +205,40 @@ export function speak(
     // ignore cancel errors
   }
 
-  // Small delay after cancel to prevent race conditions in some browsers
-  setTimeout(() => {
-    try {
-      const utterance = new SpeechSynthesisUtterance(text)
-      utterance.rate = options.rate ?? 0.85
-      utterance.pitch = options.pitch ?? 1.1
-      utterance.volume = options.volume ?? 1.0 // Full volume for better audibility
+  // Speak immediately (minimal delay for responsiveness)
+  try {
+    const utterance = new SpeechSynthesisUtterance(text)
+    utterance.rate = options.rate ?? 0.85
+    utterance.pitch = options.pitch ?? 1.1
+    utterance.volume = options.volume ?? 1.0 // Full volume for better audibility
 
-      if (currentVoice) {
-        utterance.voice = currentVoice
-        utterance.lang = currentVoice.lang
-      } else {
-        utterance.lang = 'en-US'
-      }
+    if (currentVoice) {
+      utterance.voice = currentVoice
+      utterance.lang = currentVoice.lang
+    } else {
+      utterance.lang = 'en-US'
+    }
 
-      if (options.onEnd) {
-        utterance.onend = options.onEnd
-      }
+    if (options.onEnd) {
+      utterance.onend = options.onEnd
+    }
 
-      if (options.onError) {
-        utterance.onerror = options.onError
-      } else {
-        utterance.onerror = (e) => {
-          console.warn('Speech error:', e)
-        }
-      }
-
-      s.speak(utterance)
-      speechWarmedUp = true
-    } catch (e) {
-      console.error('Failed to speak:', e)
-      if (options.onError) {
-        options.onError({ error: 'synthesis-error' } as unknown as SpeechSynthesisErrorEvent)
+    if (options.onError) {
+      utterance.onerror = options.onError
+    } else {
+      utterance.onerror = (e) => {
+        console.warn('Speech error:', e)
       }
     }
-  }, 50)
+
+    s.speak(utterance)
+    speechWarmedUp = true
+  } catch (e) {
+    console.error('Failed to speak:', e)
+    if (options.onError) {
+      options.onError({ error: 'synthesis-error' } as unknown as SpeechSynthesisErrorEvent)
+    }
+  }
 }
 
 // Speak a full question sentence (slower, clearer)
