@@ -55,6 +55,16 @@ export const scenes: Scene[] = [
     bgTo: '#d0c0f0',
     wordIds: ['flower', 'moon', 'quiet', 'star', 'sun', 'umbrella', 'violin', 'box', 'zebra'],
   },
+  {
+    id: 'dress',
+    name: '穿衣服乐园',
+    nameEn: 'Dress Up Fun',
+    emoji: '👗',
+    bgFrom: '#ffd6f0',
+    bgTo: '#e0ccff',
+    wordIds: [],
+    isSpecial: true, // 特殊场景，有独立的游戏模式
+  },
 ]
 
 export function getSceneById(id: string): Scene | undefined {

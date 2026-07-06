@@ -1,0 +1,348 @@
+/* 穿衣服模式页面样式 */
+
+.dress-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.dress-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* 左侧小人区域 */
+.dress-character-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.dress-progress {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 5px 15px;
+  border-radius: 20px;
+}
+
+/* 右侧区域 */
+.dress-right-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+  max-width: 400px;
+}
+
+/* 问题行 */
+.question-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+
+.question-bunny-avatar {
+  flex-shrink: 0;
+}
+
+.question-box {
+  flex: 1;
+  background: white;
+  border-radius: 20px;
+  padding: 15px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.question-box::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 20px;
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent white transparent transparent;
+}
+
+.question-text {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.question-letter {
+  font-size: 80px;
+  font-weight: 900;
+  color: #ff6b9d;
+  display: block;
+  text-align: center;
+  margin: 10px 0;
+  animation: letterBounce 1s ease-in-out infinite;
+}
+
+@keyframes letterBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.question-big-letter {
+  font-size: 100px;
+  font-weight: 900;
+  color: #ff6b9d;
+  text-align: center;
+  margin: 10px 0;
+  animation: letterBounce 1s ease-in-out infinite;
+}
+
+.question-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.replay-btn,
+.hint-btn {
+  background: #ff9ec7;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #e87aab;
+  transition: all 0.1s;
+}
+
+.replay-btn:hover,
+.hint-btn:hover {
+  background: #ff88b8;
+}
+
+.replay-btn:active,
+.hint-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #e87aab;
+}
+
+/* 单词显示 */
+.dress-word-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  border-radius: 20px;
+  padding: 20px 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.dress-word-emoji {
+  font-size: 80px;
+}
+
+.dress-word-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.dress-word-letter {
+  font-size: 48px;
+  font-weight: 900;
+  color: #ff6b9d;
+}
+
+.dress-word-name {
+  font-size: 20px;
+  color: #666;
+  font-weight: 600;
+}
+
+/* 小兔子区域 */
+.dress-bunny-area {
+  margin-top: 10px;
+}
+
+/* 键盘区域 */
+.dress-keyboard-area {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+/* 主题介绍卡片 */
+.theme-intro-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.theme-intro-card {
+  background: white;
+  border-radius: 30px;
+  padding: 40px 60px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  animation: cardPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes cardPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.theme-intro-emoji {
+  font-size: 100px;
+  margin-bottom: 20px;
+  animation: emojiBounce 1s ease-in-out infinite;
+}
+
+@keyframes emojiBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.theme-intro-name {
+  font-size: 32px;
+  font-weight: 900;
+  color: #ff6b9d;
+  margin-bottom: 8px;
+}
+
+.theme-intro-name-en {
+  font-size: 18px;
+  color: #999;
+  font-weight: 600;
+}
+
+/* 困倦消息 */
+.sleepy-message {
+  text-align: center;
+  padding: 20px;
+}
+
+.sleepy-emoji {
+  font-size: 60px;
+  margin-bottom: 10px;
+  animation: sleepyFloat 2s ease-in-out infinite;
+}
+
+@keyframes sleepyFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.sleepy-text {
+  font-size: 16px;
+  color: #666;
+  font-weight: 600;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .dress-content {
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .dress-character-area {
+    order: 1;
+  }
+
+  .dress-right-area {
+    order: 2;
+    max-width: 100%;
+  }
+
+  .question-letter {
+    font-size: 60px;
+  }
+
+  .question-big-letter {
+    font-size: 70px;
+  }
+
+  .dress-word-emoji {
+    font-size: 60px;
+  }
+
+  .dress-word-letter {
+    font-size: 36px;
+  }
+
+  .theme-intro-card {
+    padding: 30px 40px;
+  }
+
+  .theme-intro-emoji {
+    font-size: 70px;
+  }
+
+  .theme-intro-name {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .question-letter {
+    font-size: 50px;
+  }
+
+  .question-big-letter {
+    font-size: 60px;
+  }
+
+  .dress-word-emoji {
+    font-size: 50px;
+  }
+
+  .dress-word-letter {
+    font-size: 28px;
+  }
+
+  .dress-word-name {
+    font-size: 16px;
+  }
+}

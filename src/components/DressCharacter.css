@@ -1,0 +1,351 @@
+/* 穿衣服小人组件样式 */
+
+.dress-character {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dress-character--large {
+  width: 200px;
+  height: 280px;
+}
+
+.dress-character--medium {
+  width: 150px;
+  height: 210px;
+}
+
+.dress-character--small {
+  width: 100px;
+  height: 140px;
+}
+
+/* 基础身体 */
+.character-body {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dress-character--large .character-emoji {
+  font-size: 120px;
+}
+
+.dress-character--medium .character-emoji {
+  font-size: 90px;
+}
+
+.dress-character--small .character-emoji {
+  font-size: 60px;
+}
+
+/* 衣服通用样式 */
+.clothing-item {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.clothing-emoji {
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* 衣服出现动画 */
+.clothing-item--appear {
+  animation: clothingAppear 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes clothingAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(-20px);
+  }
+  60% {
+    transform: scale(1.1) translateY(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* 不同位置的衣服定位 */
+/* 大号尺寸定位 */
+.dress-character--large .clothing-item--head {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--large .clothing-item--head .clothing-emoji {
+  font-size: 70px;
+}
+
+.dress-character--large .clothing-item--eyes {
+  top: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--large .clothing-item--eyes .clothing-emoji {
+  font-size: 50px;
+}
+
+.dress-character--large .clothing-item--neck {
+  top: 95px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--large .clothing-item--neck .clothing-emoji {
+  font-size: 45px;
+}
+
+.dress-character--large .clothing-item--body-inner,
+.dress-character--large .clothing-item--body-mid,
+.dress-character--large .clothing-item--body-outer {
+  top: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--large .clothing-item--body-inner .clothing-emoji,
+.dress-character--large .clothing-item--body-mid .clothing-emoji,
+.dress-character--large .clothing-item--body-outer .clothing-emoji {
+  font-size: 80px;
+}
+
+.dress-character--large .clothing-item--legs-inner,
+.dress-character--large .clothing-item--legs-outer {
+  top: 170px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--large .clothing-item--legs-inner .clothing-emoji,
+.dress-character--large .clothing-item--legs-outer .clothing-emoji {
+  font-size: 70px;
+}
+
+.dress-character--large .clothing-item--hands {
+  top: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--large .clothing-item--hands .clothing-emoji {
+  font-size: 55px;
+}
+
+.dress-character--large .clothing-item--feet {
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--large .clothing-item--feet .clothing-emoji {
+  font-size: 60px;
+}
+
+.dress-character--large .clothing-item--accessory {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.dress-character--large .clothing-item--accessory .clothing-emoji {
+  font-size: 90px;
+}
+
+/* 中号尺寸定位 */
+.dress-character--medium .clothing-item--head {
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--medium .clothing-item--head .clothing-emoji {
+  font-size: 52px;
+}
+
+.dress-character--medium .clothing-item--eyes {
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--medium .clothing-item--eyes .clothing-emoji {
+  font-size: 38px;
+}
+
+.dress-character--medium .clothing-item--neck {
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--medium .clothing-item--neck .clothing-emoji {
+  font-size: 34px;
+}
+
+.dress-character--medium .clothing-item--body-inner,
+.dress-character--medium .clothing-item--body-mid,
+.dress-character--medium .clothing-item--body-outer {
+  top: 82px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--medium .clothing-item--body-inner .clothing-emoji,
+.dress-character--medium .clothing-item--body-mid .clothing-emoji,
+.dress-character--medium .clothing-item--body-outer .clothing-emoji {
+  font-size: 60px;
+}
+
+.dress-character--medium .clothing-item--legs-inner,
+.dress-character--medium .clothing-item--legs-outer {
+  top: 128px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--medium .clothing-item--legs-inner .clothing-emoji,
+.dress-character--medium .clothing-item--legs-outer .clothing-emoji {
+  font-size: 52px;
+}
+
+.dress-character--medium .clothing-item--hands {
+  top: 105px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--medium .clothing-item--hands .clothing-emoji {
+  font-size: 42px;
+}
+
+.dress-character--medium .clothing-item--feet {
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--medium .clothing-item--feet .clothing-emoji {
+  font-size: 45px;
+}
+
+.dress-character--medium .clothing-item--accessory {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.dress-character--medium .clothing-item--accessory .clothing-emoji {
+  font-size: 68px;
+}
+
+/* 小号尺寸定位 */
+.dress-character--small .clothing-item--head {
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--small .clothing-item--head .clothing-emoji {
+  font-size: 35px;
+}
+
+.dress-character--small .clothing-item--eyes {
+  top: 27px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--small .clothing-item--eyes .clothing-emoji {
+  font-size: 25px;
+}
+
+.dress-character--small .clothing-item--neck {
+  top: 47px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--small .clothing-item--neck .clothing-emoji {
+  font-size: 22px;
+}
+
+.dress-character--small .clothing-item--body-inner,
+.dress-character--small .clothing-item--body-mid,
+.dress-character--small .clothing-item--body-outer {
+  top: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--small .clothing-item--body-inner .clothing-emoji,
+.dress-character--small .clothing-item--body-mid .clothing-emoji,
+.dress-character--small .clothing-item--body-outer .clothing-emoji {
+  font-size: 40px;
+}
+
+.dress-character--small .clothing-item--legs-inner,
+.dress-character--small .clothing-item--legs-outer {
+  top: 85px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--small .clothing-item--legs-inner .clothing-emoji,
+.dress-character--small .clothing-item--legs-outer .clothing-emoji {
+  font-size: 35px;
+}
+
+.dress-character--small .clothing-item--hands {
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--small .clothing-item--hands .clothing-emoji {
+  font-size: 28px;
+}
+
+.dress-character--small .clothing-item--feet {
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dress-character--small .clothing-item--feet .clothing-emoji {
+  font-size: 30px;
+}
+
+.dress-character--small .clothing-item--accessory {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.dress-character--small .clothing-item--accessory .clothing-emoji {
+  font-size: 45px;
+}
+
+/* 开心效果 */
+.character-happy-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: happyBounce 0.5s ease-out;
+}
+
+@keyframes happyBounce {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -60%) scale(1.1);
+  }
+}
+
+/* 整体小人呼吸动画 */
+.dress-character {
+  animation: characterBreath 3s ease-in-out infinite;
+}
+
+@keyframes characterBreath {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}

@@ -8,7 +8,12 @@ function SceneSelect() {
   const navigate = useNavigate()
 
   const handleSceneClick = (sceneId: string) => {
-    navigate(`/scene/${sceneId}/mode`)
+    // 特殊场景直接跳转到对应页面
+    if (sceneId === 'dress') {
+      navigate('/dress')
+    } else {
+      navigate(`/scene/${sceneId}/mode`)
+    }
   }
 
   return (

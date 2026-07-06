@@ -17,6 +17,7 @@ export interface Scene {
   bgFrom: string
   bgTo: string
   wordIds: string[]
+  isSpecial?: boolean // 特殊场景，有独立的游戏模式
 }
 
 export interface BunnyLines {
