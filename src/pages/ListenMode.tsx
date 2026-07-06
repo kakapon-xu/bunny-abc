@@ -73,11 +73,9 @@ function ListenMode() {
       const questionText = formatQuestion(questionTemplate, currentWord.letter)
       const timer = setTimeout(() => {
         speakQuestion(questionText, () => {
-          setTimeout(() => {
-            speakLetter(currentWord.letter)
-          }, 400)
+          speakLetter(currentWord.letter)
         })
-      }, 600)
+      }, 400)
       return () => clearTimeout(timer)
     }
   }, [currentWord, speechReady, soundEnabled, questionTemplate, gameState])
@@ -89,9 +87,7 @@ function ListenMode() {
     setQuestionTemplate(template)
     const question = formatQuestion(template, currentWord.letter)
     speakQuestion(question, () => {
-      setTimeout(() => {
-        speakLetter(currentWord.letter)
-      }, 400)
+      speakLetter(currentWord.letter)
     })
   }, [currentWord, soundEnabled, speechReady, isTimeUp])
 
@@ -116,17 +112,15 @@ function ListenMode() {
       setShowHint(true)
       if (soundEnabled && speechReady) {
         speakWord(currentWord.text, () => {
-          setTimeout(() => {
-            const praise = getRandomLine('correct')
-            speakPraise(praise)
-          }, 400)
+          const praise = getRandomLine('correct')
+          speakPraise(praise)
         })
       }
 
       // After celebration, pick next word
       setTimeout(() => {
         pickNewWord()
-      }, 3000)
+      }, 2500)
     } else {
       // Wrong - gentle encouragement
       setGameState('wrong')
@@ -136,7 +130,7 @@ function ListenMode() {
       }
       setTimeout(() => {
         setGameState('asking')
-      }, 1500)
+      }, 1200)
     }
   }, [currentWord, gameState, soundEnabled, speechReady, isTimeUp, pickNewWord])
 

@@ -205,12 +205,12 @@ export function speak(
     // ignore cancel errors
   }
 
-  // Speak immediately (minimal delay for responsiveness)
   try {
     const utterance = new SpeechSynthesisUtterance(text)
-    utterance.rate = options.rate ?? 0.85
+    // Faster speech for snappier feel
+    utterance.rate = options.rate ?? 0.95
     utterance.pitch = options.pitch ?? 1.1
-    utterance.volume = options.volume ?? 1.0 // Full volume for better audibility
+    utterance.volume = options.volume ?? 1.0
 
     if (currentVoice) {
       utterance.voice = currentVoice
@@ -243,17 +243,17 @@ export function speak(
 
 // Speak a full question sentence (slower, clearer)
 export function speakQuestion(text: string, onEnd?: () => void): void {
-  speak(text, { rate: 0.8, pitch: 1.15, onEnd })
+  speak(text, { rate: 0.9, pitch: 1.15, onEnd })
 }
 
 // Speak a letter name
 export function speakLetter(letter: string, onEnd?: () => void): void {
-  speak(letter.toUpperCase(), { rate: 0.75, pitch: 1.2, onEnd })
+  speak(letter.toUpperCase(), { rate: 0.85, pitch: 1.2, onEnd })
 }
 
 // Speak a word
 export function speakWord(word: string, onEnd?: () => void): void {
-  speak(word, { rate: 0.8, pitch: 1.1, onEnd })
+  speak(word, { rate: 0.9, pitch: 1.1, onEnd })
 }
 
 // Speak praise/encouragement (more energetic)
