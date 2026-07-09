@@ -199,7 +199,11 @@ function DressMode() {
 
       {/* 庆祝动画 */}
       {gamePhase === 'celebrating' && (
-        <DressCelebration type={currentTheme.celebration} />
+        <DressCelebration
+          type={currentTheme.celebration}
+          theme={currentTheme}
+          allWornItems={wornItems}
+        />
       )}
 
       <div className="dress-content">

@@ -1,28 +1,31 @@
 // 穿衣服模式 - 主题配置数据
+// v2 - 使用 SVG 衣物组件替代 emoji
 
 export type ClothingPosition =
-  | 'head'
-  | 'eyes'
-  | 'neck'
-  | 'body-inner'
-  | 'body-mid'
-  | 'body-outer'
-  | 'legs-inner'
-  | 'legs-outer'
-  | 'hands'
-  | 'feet'
-  | 'accessory';
+  | 'underwear'
+  | 'base-layer'
+  | 'mid-layer'
+  | 'outer-layer'
+  | 'legwear'
+  | 'footwear'
+  | 'handwear'
+  | 'neckwear'
+  | 'headwear'
+  | 'eyewear'
+  | 'accessory'
+  | 'ground-item';
 
-export type CelebrationType = 'swim' | 'ski' | 'puddle' | 'sand';
+export type CelebrationType = 'ski' | 'swim' | 'puddle' | 'sand';
 
 export interface ClothingItem {
-  id: string;
+  id: string;           // 对应 BunnyClothing.tsx 中的组件 key
   letter: string;
   word: string;
   wordCn: string;
-  emoji: string;
+  emoji: string;        // 用于问题展示的小图标
   position: ClothingPosition;
-  zIndex: number;
+  zIndex: number;       // SVG 图层顺序（从小到大）
+  flyFrom: 'left' | 'right'; // 飞入方向
 }
 
 export interface DressTheme {
@@ -35,7 +38,35 @@ export interface DressTheme {
   bgGradient: string;
   items: ClothingItem[];
   celebration: CelebrationType;
+  // 场景背景装饰（雪花、雨滴、太阳等）
+  sceneDecor: 'snow' | 'rain' | 'sun' | 'pool';
 }
+
+// ❄️ 雪天主题
+const snowTheme: DressTheme = {
+  id: 'snow',
+  name: '雪天滑雪',
+  nameEn: 'Snow Day',
+  emoji: '❄️',
+  startOutfit: 'diaper',
+  startEmoji: '😴',
+  bgGradient: 'linear-gradient(180deg, #B0E0E6 0%, #E8F4F8 50%, #F0F8FF 100%)',
+  celebration: 'ski',
+  sceneDecor: 'snow',
+  items: [
+    // 从内到外的穿衣顺序
+    { id: 'snow-thermal', letter: 'T', word: 'Thermal', wordCn: '秋衣', emoji: '👕', position: 'base-layer', zIndex: 1, flyFrom: 'left' },
+    { id: 'snow-leggings', letter: 'L', word: 'Leggings', wordCn: '秋裤', emoji: '🩲', position: 'legwear', zIndex: 1, flyFrom: 'right' },
+    { id: 'snow-sweater', letter: 'S', word: 'Sweater', wordCn: '毛衣', emoji: '🧶', position: 'mid-layer', zIndex: 2, flyFrom: 'left' },
+    { id: 'snow-pants', letter: 'P', word: 'Pants', wordCn: '雪裤', emoji: '👖', position: 'legwear', zIndex: 3, flyFrom: 'right' },
+    { id: 'snow-jacket', letter: 'J', word: 'Jacket', wordCn: '滑雪服', emoji: '🧥', position: 'outer-layer', zIndex: 4, flyFrom: 'left' },
+    { id: 'snow-scarf', letter: 'S', word: 'Scarf', wordCn: '围巾', emoji: '🧣', position: 'neckwear', zIndex: 5, flyFrom: 'right' },
+    { id: 'snow-hat', letter: 'H', word: 'Hat', wordCn: '帽子', emoji: '🎩', position: 'headwear', zIndex: 9, flyFrom: 'left' },
+    { id: 'snow-gloves', letter: 'G', word: 'Gloves', wordCn: '手套', emoji: '🧤', position: 'handwear', zIndex: 6, flyFrom: 'right' },
+    { id: 'snow-boots', letter: 'B', word: 'Boots', wordCn: '滑雪靴', emoji: '🥾', position: 'footwear', zIndex: 7, flyFrom: 'left' },
+    { id: 'snow-board', letter: 'S', word: 'Snowboard', wordCn: '滑雪板', emoji: '🏂', position: 'ground-item', zIndex: 0, flyFrom: 'right' },
+  ],
+};
 
 // 🏊 泳池主题
 const poolTheme: DressTheme = {
@@ -45,39 +76,18 @@ const poolTheme: DressTheme = {
   emoji: '🏊',
   startOutfit: 'diaper',
   startEmoji: '👶',
-  bgGradient: 'linear-gradient(180deg, #87CEEB 0%, #98FB98 100%)',
+  bgGradient: 'linear-gradient(180deg, #87CEEB 0%, #B0E0E6 60%, #98FB98 100%)',
   celebration: 'swim',
+  sceneDecor: 'pool',
   items: [
-    { id: 'pool-1', letter: 'S', word: 'Swimsuit', wordCn: '泳衣', emoji: '👙', position: 'body-outer', zIndex: 3 },
-    { id: 'pool-2', letter: 'T', word: 'Trunks', wordCn: '泳裤', emoji: '🩳', position: 'legs-outer', zIndex: 3 },
-    { id: 'pool-3', letter: 'G', word: 'Goggles', wordCn: '泳镜', emoji: '🥽', position: 'eyes', zIndex: 10 },
-    { id: 'pool-4', letter: 'C', word: 'Cap', wordCn: '泳帽', emoji: '🧢', position: 'head', zIndex: 9 },
-    { id: 'pool-5', letter: 'F', word: 'Flip-flops', wordCn: '拖鞋', emoji: '🩴', position: 'feet', zIndex: 5 },
-    { id: 'pool-6', letter: 'R', word: 'Ring', wordCn: '救生圈', emoji: '⭕', position: 'accessory', zIndex: 8 },
-    { id: 'pool-7', letter: 'B', word: 'Ball', wordCn: '沙滩球', emoji: '🏐', position: 'accessory', zIndex: 7 },
-    { id: 'pool-8', letter: 'S', word: 'Sunglasses', wordCn: '太阳镜', emoji: '😎', position: 'eyes', zIndex: 11 },
-  ],
-};
-
-// ❄️ 雪天主题
-const snowTheme: DressTheme = {
-  id: 'snow',
-  name: '雪天玩耍',
-  nameEn: 'Snow Day',
-  emoji: '❄️',
-  startOutfit: 'pajamas',
-  startEmoji: '😴',
-  bgGradient: 'linear-gradient(180deg, #B0E0E6 0%, #F0F8FF 100%)',
-  celebration: 'ski',
-  items: [
-    { id: 'snow-1', letter: 'T', word: 'Thermal', wordCn: '秋衣', emoji: '👕', position: 'body-inner', zIndex: 1 },
-    { id: 'snow-2', letter: 'L', word: 'Leggings', wordCn: '秋裤', emoji: '🩲', position: 'legs-inner', zIndex: 1 },
-    { id: 'snow-3', letter: 'S', word: 'Sweater', wordCn: '毛衣', emoji: '🧶', position: 'body-mid', zIndex: 2 },
-    { id: 'snow-4', letter: 'P', word: 'Pants', wordCn: '裤子', emoji: '👖', position: 'legs-outer', zIndex: 3 },
-    { id: 'snow-5', letter: 'J', word: 'Jacket', wordCn: '外套', emoji: '🧥', position: 'body-outer', zIndex: 4 },
-    { id: 'snow-6', letter: 'H', word: 'Hat', wordCn: '帽子', emoji: '🎩', position: 'head', zIndex: 9 },
-    { id: 'snow-7', letter: 'G', word: 'Gloves', wordCn: '手套', emoji: '🧤', position: 'hands', zIndex: 6 },
-    { id: 'snow-8', letter: 'S', word: 'Snowboard', wordCn: '滑雪板', emoji: '🏂', position: 'feet', zIndex: 7 },
+    // 泳池穿搭顺序
+    { id: 'pool-swimsuit', letter: 'S', word: 'Swimsuit', wordCn: '泳衣', emoji: '👙', position: 'outer-layer', zIndex: 3, flyFrom: 'left' },
+    { id: 'pool-cap', letter: 'C', word: 'Swim Cap', wordCn: '泳帽', emoji: '🧢', position: 'headwear', zIndex: 9, flyFrom: 'right' },
+    { id: 'pool-goggles', letter: 'G', word: 'Goggles', wordCn: '泳镜', emoji: '🥽', position: 'eyewear', zIndex: 10, flyFrom: 'left' },
+    { id: 'pool-armbands', letter: 'A', word: 'Armbands', wordCn: '水袖', emoji: '🛟', position: 'accessory', zIndex: 5, flyFrom: 'right' },
+    { id: 'pool-float', letter: 'F', word: 'Float', wordCn: '救生圈', emoji: '⭕', position: 'accessory', zIndex: 6, flyFrom: 'left' },
+    { id: 'pool-slippers', letter: 'S', word: 'Slippers', wordCn: '拖鞋', emoji: '🩴', position: 'footwear', zIndex: 5, flyFrom: 'right' },
+    { id: 'pool-ball', letter: 'B', word: 'Beach Ball', wordCn: '沙滩球', emoji: '🏐', position: 'accessory', zIndex: 7, flyFrom: 'left' },
   ],
 };
 
@@ -89,21 +99,21 @@ const rainTheme: DressTheme = {
   emoji: '☔',
   startOutfit: 'casual',
   startEmoji: '🙂',
-  bgGradient: 'linear-gradient(180deg, #778899 0%, #B0C4DE 100%)',
+  bgGradient: 'linear-gradient(180deg, #778899 0%, #A9B4C2 50%, #B0C4DE 100%)',
   celebration: 'puddle',
+  sceneDecor: 'rain',
   items: [
-    { id: 'rain-1', letter: 'R', word: 'Raincoat', wordCn: '雨衣', emoji: '🧥', position: 'body-outer', zIndex: 4 },
-    { id: 'rain-2', letter: 'B', word: 'Boots', wordCn: '雨鞋', emoji: '🥾', position: 'feet', zIndex: 5 },
-    { id: 'rain-3', letter: 'U', word: 'Umbrella', wordCn: '雨伞', emoji: '☂️', position: 'accessory', zIndex: 8 },
-    { id: 'rain-4', letter: 'H', word: 'Hood', wordCn: '雨帽', emoji: '🎓', position: 'head', zIndex: 9 },
-    { id: 'rain-5', letter: 'S', word: 'Scarf', wordCn: '围巾', emoji: '🧣', position: 'neck', zIndex: 5 },
-    { id: 'rain-6', letter: 'G', word: 'Gloves', wordCn: '手套', emoji: '🧤', position: 'hands', zIndex: 6 },
-    { id: 'rain-7', letter: 'P', word: 'Poncho', wordCn: '雨披', emoji: '🧥', position: 'body-outer', zIndex: 7 },
-    { id: 'rain-8', letter: 'B', word: 'Backpack', wordCn: '书包', emoji: '🎒', position: 'accessory', zIndex: 6 },
+    // 雨天穿搭顺序
+    { id: 'rain-coat', letter: 'R', word: 'Raincoat', wordCn: '雨衣', emoji: '🧥', position: 'outer-layer', zIndex: 4, flyFrom: 'left' },
+    { id: 'rain-scarf', letter: 'S', word: 'Scarf', wordCn: '围巾', emoji: '🧣', position: 'neckwear', zIndex: 5, flyFrom: 'right' },
+    { id: 'rain-hood', letter: 'H', word: 'Hood', wordCn: '雨帽', emoji: '🎓', position: 'headwear', zIndex: 9, flyFrom: 'left' },
+    { id: 'rain-boots', letter: 'B', word: 'Boots', wordCn: '雨鞋', emoji: '🥾', position: 'footwear', zIndex: 5, flyFrom: 'right' },
+    { id: 'rain-gloves', letter: 'G', word: 'Gloves', wordCn: '手套', emoji: '🧤', position: 'handwear', zIndex: 6, flyFrom: 'left' },
+    { id: 'rain-umbrella', letter: 'U', word: 'Umbrella', wordCn: '雨伞', emoji: '☂️', position: 'accessory', zIndex: 10, flyFrom: 'right' },
   ],
 };
 
-// 🌞 晴天主题
+// ☀️ 晴天主题
 const sunnyTheme: DressTheme = {
   id: 'sunny',
   name: '晴天玩沙',
@@ -111,22 +121,23 @@ const sunnyTheme: DressTheme = {
   emoji: '☀️',
   startOutfit: 'pajamas',
   startEmoji: '😴',
-  bgGradient: 'linear-gradient(180deg, #FFD700 0%, #FFA500 100%)',
+  bgGradient: 'linear-gradient(180deg, #87CEEB 0%, #B0E0E6 50%, #90EE90 100%)',
   celebration: 'sand',
+  sceneDecor: 'sun',
   items: [
-    { id: 'sunny-1', letter: 'T', word: 'T-shirt', wordCn: 'T恤', emoji: '👕', position: 'body-outer', zIndex: 3 },
-    { id: 'sunny-2', letter: 'S', word: 'Shorts', wordCn: '短裤', emoji: '🩳', position: 'legs-outer', zIndex: 3 },
-    { id: 'sunny-3', letter: 'S', word: 'Sunglasses', wordCn: '太阳镜', emoji: '😎', position: 'eyes', zIndex: 10 },
-    { id: 'sunny-4', letter: 'H', word: 'Hat', wordCn: '遮阳帽', emoji: '👒', position: 'head', zIndex: 9 },
-    { id: 'sunny-5', letter: 'S', word: 'Sneakers', wordCn: '运动鞋', emoji: '👟', position: 'feet', zIndex: 5 },
-    { id: 'sunny-6', letter: 'B', word: 'Bottle', wordCn: '水壶', emoji: '🍼', position: 'accessory', zIndex: 7 },
-    { id: 'sunny-7', letter: 'B', word: 'Ball', wordCn: '皮球', emoji: '⚽', position: 'accessory', zIndex: 6 },
-    { id: 'sunny-8', letter: 'B', word: 'Bucket', wordCn: '沙桶', emoji: '🪣', position: 'accessory', zIndex: 8 },
+    // 晴天穿搭顺序
+    { id: 'sunny-tshirt', letter: 'T', word: 'T-shirt', wordCn: 'T恤', emoji: '👕', position: 'outer-layer', zIndex: 3, flyFrom: 'left' },
+    { id: 'sunny-shorts', letter: 'S', word: 'Shorts', wordCn: '短裤', emoji: '🩳', position: 'legwear', zIndex: 3, flyFrom: 'right' },
+    { id: 'sunny-hat', letter: 'H', word: 'Hat', wordCn: '遮阳帽', emoji: '👒', position: 'headwear', zIndex: 9, flyFrom: 'left' },
+    { id: 'sunny-sunglasses', letter: 'S', word: 'Sunglasses', wordCn: '太阳镜', emoji: '😎', position: 'eyewear', zIndex: 10, flyFrom: 'right' },
+    { id: 'sunny-shoes', letter: 'S', word: 'Shoes', wordCn: '运动鞋', emoji: '👟', position: 'footwear', zIndex: 5, flyFrom: 'left' },
+    { id: 'sunny-bottle', letter: 'B', word: 'Bottle', wordCn: '水壶', emoji: '🍼', position: 'accessory', zIndex: 6, flyFrom: 'right' },
+    { id: 'sunny-bucket', letter: 'B', word: 'Bucket', wordCn: '沙桶', emoji: '🪣', position: 'ground-item', zIndex: 7, flyFrom: 'left' },
   ],
 };
 
 // 所有主题列表
-export const dressThemes: DressTheme[] = [poolTheme, snowTheme, rainTheme, sunnyTheme];
+export const dressThemes: DressTheme[] = [snowTheme, poolTheme, rainTheme, sunnyTheme];
 
 // 随机获取一个主题
 export function getRandomTheme(): DressTheme {

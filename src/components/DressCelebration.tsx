@@ -1,20 +1,23 @@
 import React from 'react';
-import { CelebrationType } from '../data/dressThemes';
+import { CelebrationType, DressTheme } from '../data/dressThemes';
+import DressCharacter from './DressCharacter';
 import './DressCelebration.css';
 
 interface DressCelebrationProps {
   type: CelebrationType;
+  theme: DressTheme;
+  allWornItems: any[];
 }
 
-const DressCelebration: React.FC<DressCelebrationProps> = ({ type }) => {
+const DressCelebration: React.FC<DressCelebrationProps> = ({ type, theme, allWornItems }) => {
   return (
-    <div className="dress-celebration">
+    <div className="dress-celebration-v2">
       {/* 彩带效果 */}
       <div className="confetti-container">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(25)].map((_, i) => (
           <div
             key={i}
-            className={`confetti confetti--${i % 5}`}
+            className={`confetti confetti--${i % 6}`}
             style={{
               left: `${Math.random() * 100}%`,
               animationDelay: `${Math.random() * 2}s`,
@@ -23,106 +26,92 @@ const DressCelebration: React.FC<DressCelebrationProps> = ({ type }) => {
         ))}
       </div>
 
-      {/* 主题动画 */}
-      <div className={`celebration-scene celebration--${type}`}>
-        {type === 'swim' && (
-          <div className="swim-scene">
-            <div className="pool-water">
-              <div className="wave wave-1">🌊</div>
-              <div className="wave wave-2">🌊</div>
-              <div className="wave wave-3">🌊</div>
-            </div>
-            <div className="swimmer">
-              <span className="swimmer-emoji">🏊</span>
-            </div>
-            <div className="bubbles">
-              <span className="bubble">💧</span>
-              <span className="bubble">💧</span>
-              <span className="bubble">💧</span>
-            </div>
-          </div>
-        )}
-
-        {type === 'ski' && (
-          <div className="ski-scene">
-            <div className="snowflakes">
-              {[...Array(10)].map((_, i) => (
-                <span
-                  key={i}
-                  className="snowflake"
-                  style={{
-                    left: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 3}s`,
-                  }}
-                >
-                  ❄️
-                </span>
-              ))}
-            </div>
-            <div className="skier">
-              <span className="skier-emoji">⛷️</span>
-            </div>
-            <div className="snow-mountain">🏔️</div>
-          </div>
-        )}
-
-        {type === 'puddle' && (
-          <div className="puddle-scene">
-            <div className="rain-drops">
-              {[...Array(15)].map((_, i) => (
-                <span
-                  key={i}
-                  className="raindrop"
-                  style={{
-                    left: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 2}s`,
-                  }}
-                >
-                  💧
-                </span>
-              ))}
-            </div>
-            <div className="puddle-kid">
-              <span className="puddle-emoji">🚶</span>
-            </div>
-            <div className="puddles">
-              <span className="puddle">💦</span>
-              <span className="puddle">💦</span>
-              <span className="puddle">💦</span>
-            </div>
-          </div>
-        )}
-
-        {type === 'sand' && (
-          <div className="sand-scene">
-            <div className="sun">☀️</div>
-            <div className="sand-pile">🏖️</div>
-            <div className="sand-kid">
-              <span className="sand-emoji">🧒</span>
-            </div>
-            <div className="sand-toys">
-              <span className="toy">🪣</span>
-              <span className="toy">🏖️</span>
-            </div>
-          </div>
-        )}
-      </div>
-
       {/* 星星效果 */}
       <div className="stars-container">
-        {[...Array(8)].map((_, i) => (
+        {[...Array(10)].map((_, i) => (
           <span
             key={i}
             className="star"
             style={{
               left: `${10 + Math.random() * 80}%`,
-              top: `${10 + Math.random() * 80}%`,
+              top: `${10 + Math.random() * 60}%`,
               animationDelay: `${Math.random() * 1.5}s`,
             }}
           >
             ⭐
           </span>
         ))}
+      </div>
+
+      {/* 主题庆祝场景 - 同一个穿好衣服的兔子去活动 */}
+      <div className={`celebration-scene-v2 celebration--${type}`}>
+        {/* 活动场景背景 */}
+        <div className="celebration-bg">
+          {type === 'ski' && (
+            <div className="ski-bg">
+              <div className="mountain">🏔️</div>
+              <div className="snow-slope" />
+            </div>
+          )}
+          {type === 'swim' && (
+            <div className="swim-bg">
+              <div className="pool-celebration" />
+              <div className="sun-cele">☀️</div>
+            </div>
+          )}
+          {type === 'puddle' && (
+            <div className="puddle-bg">
+              <div className="rain-cele">
+                {[...Array(20)].map((_, i) => (
+                  <span
+                    key={i}
+                    className="raindrop-cele"
+                    style={{
+                      left: `${Math.random() * 100}%`,
+                      animationDelay: `${Math.random() * 1.5}s`,
+                    }}
+                  >
+                    💧
+                  </span>
+                ))}
+              </div>
+              <div className="puddles">
+                <span className="puddle">💦</span>
+                <span className="puddle puddle-2">💦</span>
+                <span className="puddle puddle-3">💦</span>
+              </div>
+            </div>
+          )}
+          {type === 'sand' && (
+            <div className="sand-bg">
+              <div className="sun-cele">☀️</div>
+              <div className="sand-pile">🏖️</div>
+              <div className="sand-toys">
+                <span>🪣</span>
+                <span>🌴</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 穿好衣服的兔子在活动中 - 滑雪/游泳/踩水/玩沙 */}
+        <div className={`celebration-bunny celebration-bunny--${type}`}>
+          <DressCharacter
+            theme={theme}
+            wornItems={allWornItems}
+            isHappy={true}
+            size="large"
+            celebrating={true}
+          />
+        </div>
+
+        {/* 活动文字 */}
+        <div className="celebration-text">
+          {type === 'ski' && '⛷️ 出发滑雪啦！'}
+          {type === 'swim' && '🏊 扑通！下水游泳！'}
+          {type === 'puddle' && '💦 踩水去咯！'}
+          {type === 'sand' && '🏖️ 沙滩玩沙啦！'}
+        </div>
       </div>
     </div>
   );

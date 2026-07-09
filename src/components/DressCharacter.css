@@ -1,351 +1,240 @@
-/* 穿衣服小人组件样式 */
+/* v2 - SVG 兔子穿衣 */
 
-.dress-character {
+.dress-character-v2 {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.dress-character--large {
-  width: 200px;
-  height: 280px;
+.dress-bunny {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease;
 }
 
-.dress-character--medium {
-  width: 150px;
-  height: 210px;
+.dress-bunny svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
 
-.dress-character--small {
-  width: 100px;
-  height: 140px;
+/* 开心弹跳 */
+.dress-bunny--happy {
+  animation: v2-bounce 0.5s ease-in-out;
 }
 
-/* 基础身体 */
-.character-body {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@keyframes v2-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
 }
 
-.dress-character--large .character-emoji {
-  font-size: 120px;
+/* 庆祝跳跃 */
+.dress-bunny--celebrate {
+  animation: v2-celebrate 0.8s ease-in-out infinite;
 }
 
-.dress-character--medium .character-emoji {
-  font-size: 90px;
+@keyframes v2-celebrate {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-18px) rotate(-4deg); }
+  75% { transform: translateY(-18px) rotate(4deg); }
 }
 
-.dress-character--small .character-emoji {
-  font-size: 60px;
+/* 衣物飞入动画 - 右边飞入 */
+.clothing-layer.clothing-fly-in {
+  animation: v2-fly-in-right 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  transform-origin: center;
 }
 
-/* 衣服通用样式 */
-.clothing-item {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.clothing-emoji {
-  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-/* 衣服出现动画 */
-.clothing-item--appear {
-  animation: clothingAppear 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-@keyframes clothingAppear {
+@keyframes v2-fly-in-right {
   0% {
     opacity: 0;
-    transform: scale(0.3) translateY(-20px);
+    transform: translate(80px, -40px) scale(0.4) rotate(25deg);
   }
   60% {
-    transform: scale(1.1) translateY(5px);
+    opacity: 1;
+    transform: translate(-5px, 5px) scale(1.08) rotate(-5deg);
   }
   100% {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: translate(0, 0) scale(1) rotate(0deg);
   }
 }
 
-/* 不同位置的衣服定位 */
-/* 大号尺寸定位 */
-.dress-character--large .clothing-item--head {
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--large .clothing-item--head .clothing-emoji {
-  font-size: 70px;
+/* 衣物飞入动画 - 左边飞入 */
+.clothing-layer.clothing-fly-in.clothing-fly-in--left {
+  animation: v2-fly-in-left 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-.dress-character--large .clothing-item--eyes {
-  top: 55px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--large .clothing-item--eyes .clothing-emoji {
-  font-size: 50px;
-}
-
-.dress-character--large .clothing-item--neck {
-  top: 95px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--large .clothing-item--neck .clothing-emoji {
-  font-size: 45px;
+@keyframes v2-fly-in-left {
+  0% {
+    opacity: 0;
+    transform: translate(-80px, -40px) scale(0.4) rotate(-25deg);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(5px, 5px) scale(1.08) rotate(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
 }
 
-.dress-character--large .clothing-item--body-inner,
-.dress-character--large .clothing-item--body-mid,
-.dress-character--large .clothing-item--body-outer {
-  top: 110px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--large .clothing-item--body-inner .clothing-emoji,
-.dress-character--large .clothing-item--body-mid .clothing-emoji,
-.dress-character--large .clothing-item--body-outer .clothing-emoji {
-  font-size: 80px;
-}
-
-.dress-character--large .clothing-item--legs-inner,
-.dress-character--large .clothing-item--legs-outer {
-  top: 170px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--large .clothing-item--legs-inner .clothing-emoji,
-.dress-character--large .clothing-item--legs-outer .clothing-emoji {
-  font-size: 70px;
-}
-
-.dress-character--large .clothing-item--hands {
-  top: 140px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--large .clothing-item--hands .clothing-emoji {
-  font-size: 55px;
-}
-
-.dress-character--large .clothing-item--feet {
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--large .clothing-item--feet .clothing-emoji {
-  font-size: 60px;
-}
-
-.dress-character--large .clothing-item--accessory {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.dress-character--large .clothing-item--accessory .clothing-emoji {
-  font-size: 90px;
-}
-
-/* 中号尺寸定位 */
-.dress-character--medium .clothing-item--head {
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--medium .clothing-item--head .clothing-emoji {
-  font-size: 52px;
-}
-
-.dress-character--medium .clothing-item--eyes {
-  top: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--medium .clothing-item--eyes .clothing-emoji {
-  font-size: 38px;
-}
-
-.dress-character--medium .clothing-item--neck {
-  top: 70px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--medium .clothing-item--neck .clothing-emoji {
-  font-size: 34px;
-}
-
-.dress-character--medium .clothing-item--body-inner,
-.dress-character--medium .clothing-item--body-mid,
-.dress-character--medium .clothing-item--body-outer {
-  top: 82px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--medium .clothing-item--body-inner .clothing-emoji,
-.dress-character--medium .clothing-item--body-mid .clothing-emoji,
-.dress-character--medium .clothing-item--body-outer .clothing-emoji {
-  font-size: 60px;
-}
-
-.dress-character--medium .clothing-item--legs-inner,
-.dress-character--medium .clothing-item--legs-outer {
-  top: 128px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--medium .clothing-item--legs-inner .clothing-emoji,
-.dress-character--medium .clothing-item--legs-outer .clothing-emoji {
-  font-size: 52px;
-}
-
-.dress-character--medium .clothing-item--hands {
-  top: 105px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--medium .clothing-item--hands .clothing-emoji {
-  font-size: 42px;
-}
-
-.dress-character--medium .clothing-item--feet {
-  bottom: 22px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--medium .clothing-item--feet .clothing-emoji {
-  font-size: 45px;
-}
-
-.dress-character--medium .clothing-item--accessory {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.dress-character--medium .clothing-item--accessory .clothing-emoji {
-  font-size: 68px;
-}
-
-/* 小号尺寸定位 */
-.dress-character--small .clothing-item--head {
-  top: 5px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--small .clothing-item--head .clothing-emoji {
-  font-size: 35px;
-}
-
-.dress-character--small .clothing-item--eyes {
-  top: 27px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--small .clothing-item--eyes .clothing-emoji {
-  font-size: 25px;
-}
-
-.dress-character--small .clothing-item--neck {
-  top: 47px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--small .clothing-item--neck .clothing-emoji {
-  font-size: 22px;
-}
-
-.dress-character--small .clothing-item--body-inner,
-.dress-character--small .clothing-item--body-mid,
-.dress-character--small .clothing-item--body-outer {
-  top: 55px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--small .clothing-item--body-inner .clothing-emoji,
-.dress-character--small .clothing-item--body-mid .clothing-emoji,
-.dress-character--small .clothing-item--body-outer .clothing-emoji {
-  font-size: 40px;
-}
-
-.dress-character--small .clothing-item--legs-inner,
-.dress-character--small .clothing-item--legs-outer {
-  top: 85px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--small .clothing-item--legs-inner .clothing-emoji,
-.dress-character--small .clothing-item--legs-outer .clothing-emoji {
-  font-size: 35px;
-}
-
-.dress-character--small .clothing-item--hands {
-  top: 70px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--small .clothing-item--hands .clothing-emoji {
-  font-size: 28px;
-}
-
-.dress-character--small .clothing-item--feet {
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.dress-character--small .clothing-item--feet .clothing-emoji {
-  font-size: 30px;
-}
-
-.dress-character--small .clothing-item--accessory {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.dress-character--small .clothing-item--accessory .clothing-emoji {
-  font-size: 45px;
-}
-
-/* 开心效果 */
-.character-happy-effect {
+/* 场景背景装饰 */
+.scene-decoration {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  transform: translate(-50%, -50%);
   pointer-events: none;
-  animation: happyBounce 0.5s ease-out;
+  overflow: hidden;
+  z-index: 0;
 }
 
-@keyframes happyBounce {
-  0%, 100% {
-    transform: translate(-50%, -50%) scale(1);
+.dress-bunny {
+  position: relative;
+  z-index: 1;
+}
+
+/* 雪花 */
+.snowflakes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.snowflake {
+  position: absolute;
+  top: -20px;
+  color: #fff;
+  font-size: 14px;
+  opacity: 0.8;
+  animation: snow-fall linear infinite;
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes snow-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
   }
-  50% {
-    transform: translate(-50%, -60%) scale(1.1);
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
   }
 }
 
-/* 整体小人呼吸动画 */
-.dress-character {
-  animation: characterBreath 3s ease-in-out infinite;
+/* 雨滴 */
+.raindrops {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
-@keyframes characterBreath {
-  0%, 100% {
+.raindrop {
+  position: absolute;
+  top: -20px;
+  font-size: 14px;
+  opacity: 0.6;
+  animation: rain-fall linear infinite;
+}
+
+@keyframes rain-fall {
+  0% {
     transform: translateY(0);
+    opacity: 0;
   }
-  50% {
-    transform: translateY(-5px);
+  10% {
+    opacity: 0.6;
   }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+/* 太阳装饰 */
+.sun-decor {
+  position: absolute;
+  top: 5%;
+  right: 10%;
+  font-size: 36px;
+  animation: sun-glow 3s ease-in-out infinite;
+}
+
+@keyframes sun-glow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 217, 61, 0.6)); }
+  50% { filter: drop-shadow(0 0 16px rgba(255, 217, 61, 0.9)); }
+}
+
+/* 泳池水 */
+.pool-decor {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: 20%;
+}
+
+.pool-water {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(79, 195, 247, 0.3) 0%, rgba(79, 195, 247, 0.5) 100%);
+  border-radius: 50%;
+  animation: pool-wave 3s ease-in-out infinite;
+}
+
+@keyframes pool-wave {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(1.03); }
+}
+
+/* 尺寸 */
+.dress-character--small {
+  width: 150px;
+  height: 190px;
+}
+
+.dress-character--medium {
+  width: 280px;
+  height: 350px;
+}
+
+.dress-character--large {
+  width: 420px;
+  height: 520px;
+}
+
+/* 确保 SVG 填满容器 */
+.dress-character-v2 .dress-bunny {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dress-character-v2 .dress-bunny svg {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
 }

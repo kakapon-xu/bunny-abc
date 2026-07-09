@@ -934,6 +934,9 @@
       questionWordEl.textContent = item.word;
       
       updateItemsListState();
+      
+      // 读一遍题目（字母+单词）
+      setTimeout(() => playPronunciation(item.letter, item.word), 300);
     }
 
     function pressKey(letter) {
@@ -958,7 +961,42 @@
       }
     }
 
+    // ========== 语音发音 ==========
+    function speakLetter(letter) {
+      if (!('speechSynthesis' in window)) return;
+      const utterance = new SpeechSynthesisUtterance(letter);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.8;
+      utterance.pitch = 1.2;
+      speechSynthesis.speak(utterance);
+    }
+
+    function speakWord(word, callback) {
+      if (!('speechSynthesis' in window)) {
+        if (callback) callback();
+        return;
+      }
+      const utterance = new SpeechSynthesisUtterance(word);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.75;
+      utterance.pitch = 1.1;
+      utterance.onend = () => { if (callback) callback(); };
+      speechSynthesis.speak(utterance);
+    }
+
+    function playPronunciation(letter, word) {
+      if (!('speechSynthesis' in window)) return;
+      speechSynthesis.cancel();
+      speakLetter(letter);
+      // 字母读完后读单词
+      setTimeout(() => {
+        speakWord(word);
+      }, 600);
+    }
+
     function handleCorrect(keyBtn, item) {
+      // 播放发音：字母 → 单词
+      playPronunciation(item.letter, item.word);
       // 按键变绿
       if (keyBtn) {
         keyBtn.classList.add('correct');

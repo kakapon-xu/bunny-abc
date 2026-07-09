@@ -1,0 +1,93 @@
+.dress-bunny {
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.dress-bunny svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 开心时弹跳 */
+.dress-bunny--happy {
+  animation: bunny-bounce 0.5s ease-in-out;
+}
+
+@keyframes bunny-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* 思考时微微晃动 */
+.dress-bunny--thinking .bunny-head {
+  animation: bunny-think 2s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes bunny-think {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+
+/* 困了时缓慢摇晃 */
+.dress-bunny--sleepy {
+  animation: bunny-sleepy 3s ease-in-out infinite;
+}
+
+@keyframes bunny-sleepy {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+/* 衣物飞入动画 */
+.clothing-fly-in {
+  animation: clothing-fly-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes clothing-fly-in {
+  0% {
+    opacity: 0;
+    transform: translate(100px, -50px) scale(0.5) rotate(20deg);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-5px, 5px) scale(1.05) rotate(-5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+}
+
+/* 衣物从左边飞入 */
+.clothing-fly-in--left {
+  animation: clothing-fly-in-left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes clothing-fly-in-left {
+  0% {
+    opacity: 0;
+    transform: translate(-100px, -50px) scale(0.5) rotate(-20deg);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(5px, 5px) scale(1.05) rotate(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+}
+
+/* 庆祝时整体跳跃 */
+.dress-bunny--celebrate {
+  animation: bunny-celebrate 0.8s ease-in-out infinite;
+}
+
+@keyframes bunny-celebrate {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-15px) rotate(-3deg); }
+  75% { transform: translateY(-15px) rotate(3deg); }
+}
