@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐰 Dress Up Fun - Bunny ABC</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      user-select: none;
+    }
+
+    /* ========== 场景选择页 ========== */
+    .scene-select {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, #FFE4EC 0%, #FFF5F8 50%, #E8F4FD 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      transition: opacity 0.5s ease;
+    }
+
+    .scene-select.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .scene-title {
+      font-size: 36px;
+      font-weight: 800;
+      color: #FF6B9D;
+      margin-bottom: 8px;
+      text-shadow: 2px 2px 0 #fff;
+    }
+
+    .scene-subtitle {
+      font-size: 18px;
+      color: #888;
+      margin-bottom: 40px;
+    }
+
+    .scene-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 600px;
+      width: 90%;
+    }
+
+    .scene-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 107, 157, 0.15);
+      border: 3px solid transparent;
+    }
+
+    .scene-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(255, 107, 157, 0.25);
+      border-color: #FFB6C1;
+    }
+
+    .scene-card.selected {
+      border-color: #FF6B9D;
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(255, 107, 157, 0.35);
+      animation: cardPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes cardPulse {
+      0%, 100% { box-shadow: 0 8px 25px rgba(255, 107, 157, 0.35); }
+      50% { box-shadow: 0 8px 35px rgba(255, 107, 157, 0.55); }
+    }
+
+    .scene-card:active {
+      transform: translateY(-2px);
+    }
+
+    .scene-card-emoji {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .scene-card-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .scene-card-en {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .keyboard-hint {
+      margin-top: 32px;
+      font-size: 13px;
+      color: #aaa;
+      text-align: center;
+    }
+
+    .keyboard-hint kbd {
+      display: inline-block;
+      padding: 2px 8px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+      margin: 0 2px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    }
+
+    /* ========== 游戏主页面 ========== */
+    .game-page {
+      position: fixed;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+    }
+
+    .game-page.active {
+      display: flex;
+    }
+
+    /* 顶部栏 */
+    .top-bar {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+      position: relative;
+    }
+
+    .back-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #fff;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+
+    .back-btn:active {
+      transform: scale(0.95);
+    }
+
+    .theme-info {
+      text-align: center;
+    }
+
+    .theme-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .theme-emoji {
+      font-size: 24px;
+      margin-right: 6px;
+    }
+
+    .progress-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: #FF6B9D;
+      min-width: 60px;
+      text-align: right;
+    }
+
+    /* 游戏主区域 - 左右布局 */
+    .game-area {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 20px;
+      gap: 30px;
+    }
+
+    /* 兔子容器 - 左侧 */
+    .bunny-container {
+      position: relative;
+      width: min(42vh, 45vw);
+      height: min(42vh, 45vw);
+      max-width: 380px;
+      max-height: 380px;
+      flex-shrink: 0;
+    }
+
+    .bunny-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 20px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .bunny-img.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .bunny-img.pop {
+      animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* 问题提示框 - 右侧 */
+    .question-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      max-width: 280px;
+    }
+
+    .question-box {
+      background: #fff;
+      border-radius: 20px;
+      padding: 16px 18px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+      text-align: center;
+      position: relative;
+      width: 100%;
+      border: 3px solid #FF6B9D;
+    }
+
+    .question-box::before {
+      content: '';
+      position: absolute;
+      left: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      border-right: 14px solid #FF6B9D;
+    }
+
+    .question-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .question-letter {
+      font-size: 56px;
+      font-weight: 900;
+      color: #FF6B9D;
+      line-height: 1;
+      text-shadow: 2px 2px 0 #FFE4EC;
+      animation: letterBounce 1.2s ease-in-out infinite;
+      min-width: 60px;
+    }
+
+    @keyframes letterBounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .question-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FFE4EC, #fff);
+      border: 3px solid #FF6B9D;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      animation: iconFloat 1.5s ease-in-out infinite;
+      box-shadow: 0 4px 14px rgba(255,107,157,0.3);
+    }
+
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-4px) rotate(3deg); }
+    }
+
+    .question-word {
+      font-size: 18px;
+      color: #333;
+      font-weight: 700;
+      border-top: 2px dashed #eee;
+      padding-top: 10px;
+    }
+
+    /* 物品清单 */
+    .items-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .item-dot {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      transition: all 0.3s ease;
+      opacity: 0.4;
+      border: 2px solid #eee;
+    }
+
+    .item-dot.done {
+      background: #D5F5E3;
+      opacity: 1;
+      transform: scale(1.05);
+      border-color: #27AE60;
+    }
+
+    .item-dot.current {
+      background: #FFE4EC;
+      opacity: 1;
+      border-color: #FF6B9D;
+      transform: scale(1.15);
+      animation: pulse 1.5s ease infinite;
+      box-shadow: 0 0 0 4px rgba(255, 107, 157, 0.2);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1.15); }
+      50% { transform: scale(1.25); }
+    }
+
+    /* 星星特效 */
+    .sparkle {
+      position: absolute;
+      font-size: 24px;
+      pointer-events: none;
+      animation: sparkle 0.8s ease-out forwards;
+      z-index: 20;
+    }
+
+    @keyframes sparkle {
+      0% {
+        opacity: 0;
+        transform: scale(0) rotate(0deg);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.2) rotate(180deg);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0.5) rotate(360deg) translateY(-30px);
+      }
+    }
+
+    /* 答对/答错反馈 */
+    .feedback {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 80px;
+      z-index: 30;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .feedback.show {
+      animation: feedbackPop 0.8s ease-out;
+    }
+
+    @keyframes feedbackPop {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+      30% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+      70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    }
+
+    /* 虚拟键盘 */
+    .keyboard {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 12px 10px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 10;
+    }
+
+    .keyboard-row {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .key {
+      width: 9vw;
+      max-width: 50px;
+      height: 50px;
+      border: none;
+      border-radius: 10px;
+      background: #fff;
+      font-size: 20px;
+      font-weight: 700;
+      color: #555;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: all 0.15s ease;
+    }
+
+    .key:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      background: #FFE4EC;
+      color: #FF6B9D;
+    }
+
+    .key.wrong {
+      animation: wrongShake 0.4s ease;
+      background: #FFE0E0;
+      color: #E74C3C;
+    }
+
+    @keyframes wrongShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .key.correct {
+      background: #D5F5E3;
+      color: #27AE60;
+      transform: scale(1.1);
+    }
+
+    /* 庆祝页面 */
+    .celebration {
+      position: fixed;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 80px;
+      z-index: 50;
+      background: rgba(0,0,0,0.15);
+      pointer-events: none;
+    }
+
+    .celebration.show {
+      display: flex;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .celebration-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 20px 36px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: auto;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.5) translateY(50px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .celebration-emoji {
+      font-size: 56px;
+      margin-bottom: 8px;
+      animation: bounce 1s ease infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .celebration-text {
+      font-size: 22px;
+      font-weight: 800;
+      color: #FF6B9D;
+      margin-bottom: 4px;
+    }
+
+    .celebration-sub {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 16px;
+    }
+
+    .celebration-btn {
+      background: linear-gradient(135deg, #FF6B9D, #FF8FAB);
+      color: #fff;
+      border: none;
+      padding: 10px 28px;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255, 107, 157, 0.4);
+      transition: transform 0.2s;
+    }
+
+    .celebration-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* 彩带动画 */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      top: -10px;
+      z-index: 60;
+      pointer-events: none;
+      animation: confettiFall linear forwards;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .game-area {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+      }
+
+      .bunny-container {
+        width: min(35vh, 70vw);
+        height: min(35vh, 70vw);
+      }
+
+      .question-panel {
+        max-width: 90%;
+      }
+
+      .question-box {
+        padding: 16px 20px;
+      }
+
+      .question-box::before {
+        display: none;
+      }
+
+      .question-letter {
+        font-size: 48px;
+      }
+
+      .item-dot {
+        width: 44px;
+        height: 44px;
+        font-size: 22px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .scene-title { font-size: 28px; }
+      .scene-grid { gap: 12px; }
+      .scene-card { padding: 15px; }
+      .scene-card-emoji { font-size: 36px; }
+      .scene-card-name { font-size: 16px; }
+      .key { height: 44px; font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 场景选择页 -->
+  <div class="scene-select" id="sceneSelect">
+    <div class="scene-title">👗 Dress Up Fun</div>
+    <div class="scene-subtitle">Help the bunny get dressed!</div>
+    <div class="scene-grid">
+      <div class="scene-card" onclick="startGame('sunny')">
+        <div class="scene-card-emoji">☀️</div>
+        <div class="scene-card-name">Sunny Beach</div>
+      </div>
+      <div class="scene-card" onclick="startGame('pool')">
+        <div class="scene-card-emoji">🏊</div>
+        <div class="scene-card-name">Pool Day</div>
+      </div>
+      <div class="scene-card" onclick="startGame('rainy')">
+        <div class="scene-card-emoji">☔</div>
+        <div class="scene-card-name">Rainy Day</div>
+      </div>
+      <div class="scene-card" onclick="startGame('snowy')">
+        <div class="scene-card-emoji">❄️</div>
+        <div class="scene-card-name">Snowy Day</div>
+      </div>
+    </div>
+    <div class="keyboard-hint">
+      <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> to select &nbsp;·&nbsp; <kbd>Enter</kbd> to start
+    </div>
+  </div>
+
+  <!-- 游戏主页面 -->
+  <div class="game-page" id="gamePage">
+    <div class="top-bar">
+      <button class="back-btn" onclick="backToSelect()">←</button>
+      <div class="theme-info">
+        <div class="theme-name">
+          <span class="theme-emoji" id="themeEmoji">☀️</span>
+          <span id="themeName">Sunny Beach</span>
+        </div>
+      </div>
+      <div class="progress-text">
+        <span id="currentNum">0</span> / <span id="totalNum">6</span>
+      </div>
+    </div>
+
+    <div class="game-area" id="gameArea">
+      <!-- 兔子 - 左侧 -->
+      <div class="bunny-container" id="bunnyContainer">
+        <img class="bunny-img" id="bunnyImg" src="assets/sunny-start.jpg" alt="Bunny">
+      </div>
+
+      <!-- 问题提示 - 右侧 -->
+      <div class="question-panel">
+        <div class="question-box">
+          <div class="question-top-row">
+            <div class="question-letter" id="questionLetter">H</div>
+            <div class="question-icon" id="questionIcon">👒</div>
+          </div>
+          <div class="question-word" id="questionWord">Hat</div>
+        </div>
+        <div class="items-list" id="itemsList"></div>
+      </div>
+
+      <div class="feedback" id="feedback">✨</div>
+    </div>
+
+    <div class="keyboard">
+      <div class="keyboard-row">
+        <button class="key" onclick="pressKey('Q')">Q</button>
+        <button class="key" onclick="pressKey('W')">W</button>
+        <button class="key" onclick="pressKey('E')">E</button>
+        <button class="key" onclick="pressKey('R')">R</button>
+        <button class="key" onclick="pressKey('T')">T</button>
+        <button class="key" onclick="pressKey('Y')">Y</button>
+        <button class="key" onclick="pressKey('U')">U</button>
+        <button class="key" onclick="pressKey('I')">I</button>
+        <button class="key" onclick="pressKey('O')">O</button>
+        <button class="key" onclick="pressKey('P')">P</button>
+      </div>
+      <div class="keyboard-row">
+        <button class="key" onclick="pressKey('A')">A</button>
+        <button class="key" onclick="pressKey('S')">S</button>
+        <button class="key" onclick="pressKey('D')">D</button>
+        <button class="key" onclick="pressKey('F')">F</button>
+        <button class="key" onclick="pressKey('G')">G</button>
+        <button class="key" onclick="pressKey('H')">H</button>
+        <button class="key" onclick="pressKey('J')">J</button>
+        <button class="key" onclick="pressKey('K')">K</button>
+        <button class="key" onclick="pressKey('L')">L</button>
+      </div>
+      <div class="keyboard-row">
+        <button class="key" onclick="pressKey('Z')">Z</button>
+        <button class="key" onclick="pressKey('X')">X</button>
+        <button class="key" onclick="pressKey('C')">C</button>
+        <button class="key" onclick="pressKey('V')">V</button>
+        <button class="key" onclick="pressKey('B')">B</button>
+        <button class="key" onclick="pressKey('N')">N</button>
+        <button class="key" onclick="pressKey('M')">M</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 庆祝页面 -->
+  <div class="celebration" id="celebration">
+    <div class="celebration-card">
+      <div class="celebration-emoji" id="celebrationEmoji">🎉</div>
+      <div class="celebration-text">Great Job!</div>
+      <div class="celebration-sub" id="celebrationSub">Bunny is all dressed!</div>
+      <button class="celebration-btn" onclick="nextTheme()">Next →</button>
+    </div>
+  </div>
+
+  <script>
+    // ========== 游戏数据 ==========
+    const themes = {
+      sunny: {
+        name: 'Sunny Beach',
+        nameEn: 'Sunny Beach',
+        emoji: '☀️',
+        startImg: 'assets/sunny-start.jpg',
+        finalImg: 'assets/sunny-final.jpg',
+        celebrationEmoji: '🏖️',
+        celebrationText: "Let's play in the sand!",
+        items: [
+          { letter: 'H', word: 'Hat', wordCn: '草帽', emoji: '👒', stepImg: 'assets/sunny-step1.jpg' },
+          { letter: 'T', word: 'T-shirt', wordCn: 'T恤', emoji: '👕', stepImg: 'assets/sunny-step2.jpg' },
+          { letter: 'S', word: 'Shorts', wordCn: '短裤', emoji: '🩳', stepImg: 'assets/sunny-step3.jpg' },
+          { letter: 'S', word: 'Shoes', wordCn: '鞋子', emoji: '👟', stepImg: 'assets/sunny-step4.jpg' },
+          { letter: 'S', word: 'Sunglasses', wordCn: '太阳镜', emoji: '🕶️', stepImg: 'assets/sunny-step5.jpg' },
+          { letter: 'B', word: 'Bucket', wordCn: '沙桶', emoji: '🛢️', stepImg: 'assets/sunny-step6.jpg' },
+        ]
+      },
+      pool: {
+        name: 'Pool Day',
+        nameEn: 'Pool Day',
+        emoji: '🏊',
+        startImg: 'assets/pool-start.jpg',
+        finalImg: 'assets/pool-final.jpg',
+        celebrationEmoji: '🏊‍♀️',
+        celebrationText: "Let's go swimming!",
+        items: [
+          { letter: 'S', word: 'Swimsuit', wordCn: '泳衣', emoji: '👙', stepImg: 'assets/pool-step1.jpg' },
+          { letter: 'C', word: 'Swim Cap', wordCn: '泳帽', emoji: '🧢', stepImg: 'assets/pool-step2.jpg' },
+          { letter: 'G', word: 'Goggles', wordCn: '泳镜', emoji: '🥽', stepImg: 'assets/pool-step3.jpg' },
+          { letter: 'A', word: 'Armbands', wordCn: '手臂圈', emoji: '💪', stepImg: 'assets/pool-step4.jpg' },
+          { letter: 'F', word: 'Float', wordCn: '游泳圈', emoji: '⭕', stepImg: 'assets/pool-step5.jpg' },
+          { letter: 'S', word: 'Slippers', wordCn: '拖鞋', emoji: '👡', stepImg: 'assets/pool-step6.jpg' },
+        ]
+      },
+      rainy: {
+        name: 'Rainy Day',
+        nameEn: 'Rainy Day',
+        emoji: '☔',
+        startImg: 'assets/rainy-start.jpg',
+        finalImg: 'assets/rainy-final.jpg',
+        celebrationEmoji: '🐸',
+        celebrationText: "Puddles are so fun!",
+        items: [
+          { letter: 'R', word: 'Raincoat', wordCn: '雨衣', emoji: '🧥', stepImg: 'assets/rainy-step1.jpg' },
+          { letter: 'B', word: 'Rain Boots', wordCn: '雨靴', emoji: '🥾', stepImg: 'assets/rainy-step2.jpg' },
+          { letter: 'U', word: 'Umbrella', wordCn: '雨伞', emoji: '☂️', stepImg: 'assets/rainy-step3.jpg' },
+          { letter: 'F', word: 'Frog', wordCn: '小青蛙', emoji: '🐸', stepImg: 'assets/rainy-step4.jpg' },
+          { letter: 'S', word: 'Snail', wordCn: '小蜗牛', emoji: '🐌', stepImg: 'assets/rainy-step5.jpg' },
+        ]
+      },
+      snowy: {
+        name: 'Snowy Day',
+        nameEn: 'Snowy Day',
+        emoji: '❄️',
+        startImg: 'assets/snowy-start.jpg',
+        finalImg: 'assets/snowy-final.jpg',
+        celebrationEmoji: '⛷️',
+        celebrationText: "Let's go snowboarding!",
+        items: [
+          { letter: 'C', word: 'Coat', wordCn: '外套', emoji: '🧥', stepImg: 'assets/snowy-step1.jpg' },
+          { letter: 'S', word: 'Scarf', wordCn: '围巾', emoji: '🧣', stepImg: 'assets/snowy-step2.jpg' },
+          { letter: 'H', word: 'Hat', wordCn: '帽子', emoji: '🧢', stepImg: 'assets/snowy-step3.jpg' },
+          { letter: 'G', word: 'Gloves', wordCn: '手套', emoji: '🧤', stepImg: 'assets/snowy-step4.jpg' },
+          { letter: 'B', word: 'Snow Boots', wordCn: '雪地靴', emoji: '🥾', stepImg: 'assets/snowy-step5.jpg' },
+          { letter: 'S', word: 'Snowboard', wordCn: '滑雪板', emoji: '🏂', stepImg: 'assets/snowy-step6.jpg' },
+        ]
+      }
+    };
+
+    const themeOrder = ['sunny', 'pool', 'rainy', 'snowy'];
+
+    // ========== 游戏状态 ==========
+    let currentThemeKey = 'sunny';
+    let currentItemIndex = 0;
+    let isAnswering = false;
+    let selectedSceneIndex = 0;
+
+    // ========== DOM 元素 ==========
+    const sceneSelect = document.getElementById('sceneSelect');
+    const gamePage = document.getElementById('gamePage');
+    const bunnyImg = document.getElementById('bunnyImg');
+    const bunnyContainer = document.getElementById('bunnyContainer');
+    const gameArea = document.getElementById('gameArea');
+    const themeEmojiEl = document.getElementById('themeEmoji');
+    const themeNameEl = document.getElementById('themeName');
+    const currentNumEl = document.getElementById('currentNum');
+    const totalNumEl = document.getElementById('totalNum');
+    const questionLetterEl = document.getElementById('questionLetter');
+    const questionIconEl = document.getElementById('questionIcon');
+    const questionWordEl = document.getElementById('questionWord');
+    const feedbackEl = document.getElementById('feedback');
+    const celebration = document.getElementById('celebration');
+    const celebrationEmoji = document.getElementById('celebrationEmoji');
+    const celebrationSub = document.getElementById('celebrationSub');
+    const itemsListEl = document.getElementById('itemsList');
+
+    // ========== 场景选择键盘导航 ==========
+    function updateSceneSelection() {
+      const cards = document.querySelectorAll('.scene-card');
+      cards.forEach((card, index) => {
+        if (index === selectedSceneIndex) {
+          card.classList.add('selected');
+        } else {
+          card.classList.remove('selected');
+        }
+      });
+    }
+
+    function selectScene(direction) {
+      const total = themeOrder.length;
+      if (direction === 'right' || direction === 'down') {
+        selectedSceneIndex = (selectedSceneIndex + 1) % total;
+      } else {
+        selectedSceneIndex = (selectedSceneIndex - 1 + total) % total;
+      }
+      updateSceneSelection();
+    }
+
+    function startSelectedScene() {
+      startGame(themeOrder[selectedSceneIndex]);
+    }
+
+    // ========== 游戏逻辑 ==========
+    function startGame(themeKey) {
+      currentThemeKey = themeKey;
+      currentItemIndex = 0;
+      
+      const theme = themes[themeKey];
+      
+      // 更新UI
+      themeEmojiEl.textContent = theme.emoji;
+      themeNameEl.textContent = theme.name;
+      totalNumEl.textContent = theme.items.length;
+      currentNumEl.textContent = '0';
+      
+      // 重置图片到起始状态
+      bunnyImg.src = theme.startImg;
+      bunnyImg.classList.remove('hidden', 'pop');
+      
+      // 生成物品清单
+      renderItemsList();
+      
+      // 切换页面
+      sceneSelect.classList.add('hidden');
+      gamePage.classList.add('active');
+      
+      // 显示第一个问题
+      updateQuestion();
+      
+      isAnswering = false;
+    }
+
+    function renderItemsList() {
+      const theme = themes[currentThemeKey];
+      itemsListEl.innerHTML = '';
+      
+      theme.items.forEach((item, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'item-dot';
+        dot.textContent = item.emoji;
+        dot.title = item.word;
+        itemsListEl.appendChild(dot);
+      });
+      
+      updateItemsListState();
+    }
+
+    function updateItemsListState() {
+      const dots = itemsListEl.querySelectorAll('.item-dot');
+      dots.forEach((dot, index) => {
+        dot.classList.remove('done', 'current');
+        if (index < currentItemIndex) {
+          dot.classList.add('done');
+        } else if (index === currentItemIndex) {
+          dot.classList.add('current');
+        }
+      });
+    }
+
+    function backToSelect() {
+      gamePage.classList.remove('active');
+      sceneSelect.classList.remove('hidden');
+    }
+
+    function updateQuestion() {
+      const theme = themes[currentThemeKey];
+      const item = theme.items[currentItemIndex];
+      
+      if (!item) {
+        showCelebration();
+        return;
+      }
+      
+      questionLetterEl.textContent = item.letter;
+      questionIconEl.textContent = item.emoji;
+      questionWordEl.textContent = item.word;
+      
+      updateItemsListState();
+    }
+
+    function pressKey(letter) {
+      if (isAnswering) return;
+      
+      const theme = themes[currentThemeKey];
+      const item = theme.items[currentItemIndex];
+      
+      if (!item) return;
+      
+      const keyBtn = [...document.querySelectorAll('.key')].find(
+        btn => btn.textContent === letter
+      );
+      
+      if (letter.toUpperCase() === item.letter.toUpperCase()) {
+        // 答对了！
+        isAnswering = true;
+        handleCorrect(keyBtn, item);
+      } else {
+        // 答错了
+        handleWrong(keyBtn);
+      }
+    }
+
+    function handleCorrect(keyBtn, item) {
+      // 按键变绿
+      if (keyBtn) {
+        keyBtn.classList.add('correct');
+        setTimeout(() => keyBtn.classList.remove('correct'), 500);
+      }
+      
+      // 显示对号反馈
+      feedbackEl.textContent = '✨';
+      feedbackEl.classList.remove('show');
+      void feedbackEl.offsetWidth; // 重启动画
+      feedbackEl.classList.add('show');
+      
+      // 星星特效
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => spawnSparkle(), i * 60);
+      }
+      
+      // 更新进度
+      currentItemIndex++;
+      currentNumEl.textContent = currentItemIndex;
+      
+      // 更新兔子图片（显示穿上新衣服的样子）
+      const theme = themes[currentThemeKey];
+      
+      if (currentItemIndex >= theme.items.length) {
+        // 全部穿完，显示最终活动图
+        setTimeout(() => {
+          bunnyImg.src = theme.finalImg;
+          bunnyImg.classList.remove('pop');
+          void bunnyImg.offsetWidth;
+          bunnyImg.classList.add('pop');
+          
+          updateItemsListState();
+          
+          setTimeout(() => {
+            showCelebration();
+            isAnswering = false;
+          }, 1200);
+        }, 600);
+      } else {
+        // 切换到下一张步骤图
+        setTimeout(() => {
+          const nextItem = theme.items[currentItemIndex - 1];
+          if (nextItem && nextItem.stepImg) {
+            bunnyImg.src = nextItem.stepImg;
+            bunnyImg.classList.remove('pop');
+            void bunnyImg.offsetWidth;
+            bunnyImg.classList.add('pop');
+          }
+          
+          updateItemsListState();
+          
+          // 下一题
+          setTimeout(() => {
+            updateQuestion();
+            isAnswering = false;
+          }, 400);
+        }, 500);
+      }
+    }
+
+    function handleWrong(keyBtn) {
+      if (keyBtn) {
+        keyBtn.classList.add('wrong');
+        setTimeout(() => keyBtn.classList.remove('wrong'), 400);
+      }
+      
+      // 简单的错误提示
+      feedbackEl.textContent = '🤔';
+      feedbackEl.classList.remove('show');
+      void feedbackEl.offsetWidth;
+      feedbackEl.classList.add('show');
+    }
+
+    function spawnSparkle() {
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkle';
+      sparkle.textContent = ['✨', '⭐', '💫', '🌟'][Math.floor(Math.random() * 4)];
+      
+      const containerRect = bunnyContainer.getBoundingClientRect();
+      const gameRect = gameArea.getBoundingClientRect();
+      
+      const x = containerRect.left - gameRect.left + Math.random() * containerRect.width;
+      const y = containerRect.top - gameRect.top + Math.random() * containerRect.height * 0.7;
+      
+      sparkle.style.left = x + 'px';
+      sparkle.style.top = y + 'px';
+      sparkle.style.fontSize = (16 + Math.random() * 16) + 'px';
+      
+      gameArea.appendChild(sparkle);
+      
+      setTimeout(() => sparkle.remove(), 1000);
+    }
+
+    function showCelebration() {
+      const theme = themes[currentThemeKey];
+      celebrationEmoji.textContent = theme.celebrationEmoji;
+      celebrationSub.textContent = theme.celebrationText;
+      celebration.classList.add('show');
+      
+      // 彩带
+      spawnConfetti();
+    }
+
+    function spawnConfetti() {
+      const colors = ['#FF6B9D', '#FFD93D', '#6BCB77', '#4D96FF', '#FF8FAB', '#A8E6CF'];
+      
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + 'vw';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+          confetti.style.animationDelay = Math.random() * 0.5 + 's';
+          confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+          confetti.style.width = (6 + Math.random() * 8) + 'px';
+          confetti.style.height = (6 + Math.random() * 8) + 'px';
+          
+          document.body.appendChild(confetti);
+          
+          setTimeout(() => confetti.remove(), 4000);
+        }, i * 50);
+      }
+    }
+
+    function nextTheme() {
+      celebration.classList.remove('show');
+      
+      // 找到下一个主题
+      const currentIndex = themeOrder.indexOf(currentThemeKey);
+      const nextIndex = (currentIndex + 1) % themeOrder.length;
+      const nextThemeKey = themeOrder[nextIndex];
+      
+      // 如果回到第一个，显示选择页
+      if (nextIndex === 0) {
+        backToSelect();
+      } else {
+        startGame(nextThemeKey);
+      }
+    }
+
+    // ========== 键盘事件 ==========
+    document.addEventListener('keydown', (e) => {
+      const key = e.key;
+
+      // 场景选择页
+      if (!sceneSelect.classList.contains('hidden')) {
+        if (key === 'ArrowLeft' || key === 'ArrowUp') {
+          e.preventDefault();
+          selectScene('left');
+        } else if (key === 'ArrowRight' || key === 'ArrowDown') {
+          e.preventDefault();
+          selectScene('right');
+        } else if (key === 'Enter' || key === ' ') {
+          e.preventDefault();
+          startSelectedScene();
+        }
+        return;
+      }
+
+      // 庆祝页面
+      if (celebration.classList.contains('show')) {
+        if (key === 'Enter' || key === ' ') {
+          e.preventDefault();
+          nextTheme();
+        } else if (key === 'Escape') {
+          e.preventDefault();
+          celebration.classList.remove('show');
+          backToSelect();
+        }
+        return;
+      }
+
+      // 游戏页 - Esc 返回
+      if (key === 'Escape') {
+        e.preventDefault();
+        backToSelect();
+        return;
+      }
+
+      // 游戏页 - 字母答题
+      const letter = key.toUpperCase();
+      if (/^[A-Z]$/.test(letter)) {
+        pressKey(letter);
+      }
+    });
+
+    // 初始化场景选中状态
+    updateSceneSelection();
+  </script>
+</body>
+</html>
