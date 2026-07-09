@@ -111,9 +111,11 @@ function ListenMode() {
       setGameState('correct')
       setShowHint(true)
       if (soundEnabled && speechReady) {
-        speakWord(currentWord.text, () => {
-          const praise = getRandomLine('correct')
-          speakPraise(praise)
+        speakLetter(currentWord.letter, () => {
+          speakWord(currentWord.text, () => {
+            const praise = getRandomLine('correct')
+            speakPraise(praise)
+          })
         })
       }
 

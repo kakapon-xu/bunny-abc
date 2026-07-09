@@ -216,6 +216,7 @@
       max-width: 380px;
       max-height: 380px;
       flex-shrink: 0;
+      z-index: 2;
     }
 
     .bunny-img {
@@ -244,6 +245,119 @@
       100% { transform: scale(1); }
     }
 
+    /* ========== 天气特效层 ========== */
+    .weather-effects {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .weather-effects > * {
+      position: absolute;
+      pointer-events: none;
+    }
+
+    /* --- 云朵 (晴天) --- */
+    .cloud {
+      font-size: 40px;
+      opacity: 0.7;
+      animation: cloudFloat linear infinite;
+    }
+
+    @keyframes cloudFloat {
+      0% { transform: translateX(-100px); }
+      100% { transform: translateX(calc(100vw + 100px)); }
+    }
+
+    /* --- 阳光光线 (晴天) --- */
+    .sun-ray {
+      position: absolute;
+      top: -20%;
+      width: 80px;
+      height: 140%;
+      background: linear-gradient(180deg, rgba(255, 236, 160, 0.35) 0%, rgba(255, 236, 160, 0) 100%);
+      transform-origin: top center;
+      animation: sunRaySway 5s ease-in-out infinite;
+    }
+
+    @keyframes sunRaySway {
+      0%, 100% { transform: rotate(-5deg); opacity: 0.4; }
+      50% { transform: rotate(5deg); opacity: 0.7; }
+    }
+
+    /* --- 雨滴 (雨天) --- */
+    .raindrop {
+      width: 2px;
+      height: 20px;
+      background: linear-gradient(180deg, rgba(174, 214, 241, 0) 0%, rgba(174, 214, 241, 0.8) 100%);
+      border-radius: 2px;
+      animation: rainFall linear infinite;
+    }
+
+    @keyframes rainFall {
+      0% { transform: translateY(-20px); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0.3; }
+    }
+
+    /* --- 雪花 (雪天) --- */
+    .snowflake {
+      color: #fff;
+      text-shadow: 0 0 4px rgba(255,255,255,0.8);
+      animation: snowFall linear infinite;
+    }
+
+    @keyframes snowFall {
+      0% {
+        transform: translateY(-20px) translateX(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% { opacity: 1; }
+      100% {
+        transform: translateY(100vh) translateX(40px) rotate(360deg);
+        opacity: 0.5;
+      }
+    }
+
+    /* --- 水泡 (泳池) --- */
+    .bubble {
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(174, 214, 241, 0.3));
+      border: 1px solid rgba(255,255,255,0.4);
+      animation: bubbleRise ease-in infinite;
+    }
+
+    @keyframes bubbleRise {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+      }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.6; }
+      100% {
+        transform: translateY(-100vh) scale(0.5);
+        opacity: 0;
+      }
+    }
+
+    /* --- 波光 (泳池) --- */
+    .sparkle-light {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 6px 2px rgba(255,255,255,0.6);
+      animation: sparkleTwinkle 2s ease-in-out infinite;
+    }
+
+    @keyframes sparkleTwinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
     /* 问题提示框 - 右侧 */
     .question-panel {
       display: flex;
@@ -251,6 +365,8 @@
       align-items: center;
       gap: 20px;
       max-width: 280px;
+      position: relative;
+      z-index: 10;
     }
 
     .question-box {
@@ -667,6 +783,9 @@
     </div>
 
     <div class="game-area" id="gameArea">
+      <!-- 天气特效层 -->
+      <div class="weather-effects" id="weatherEffects"></div>
+
       <!-- 兔子 - 左侧 -->
       <div class="bunny-container" id="bunnyContainer">
         <img class="bunny-img" id="bunnyImg" src="assets/sunny-start.jpg" alt="Bunny">
@@ -831,6 +950,7 @@
     const celebrationEmoji = document.getElementById('celebrationEmoji');
     const celebrationSub = document.getElementById('celebrationSub');
     const itemsListEl = document.getElementById('itemsList');
+    const weatherEffectsEl = document.getElementById('weatherEffects');
 
     // ========== 场景选择键盘导航 ==========
     function updateSceneSelection() {
@@ -858,6 +978,113 @@
       startGame(themeOrder[selectedSceneIndex]);
     }
 
+    // ========== 天气特效 ==========
+    function clearWeatherEffects() {
+      weatherEffectsEl.innerHTML = '';
+    }
+
+    function createClouds() {
+      const cloudEmojis = ['☁️', '⛅', '☁️'];
+      for (let i = 0; i < 5; i++) {
+        const cloud = document.createElement('div');
+        cloud.className = 'cloud';
+        cloud.textContent = cloudEmojis[i % cloudEmojis.length];
+        cloud.style.top = (5 + Math.random() * 35) + '%';
+        cloud.style.fontSize = (30 + Math.random() * 30) + 'px';
+        cloud.style.animationDuration = (25 + Math.random() * 25) + 's';
+        cloud.style.animationDelay = (-Math.random() * 30) + 's';
+        cloud.style.opacity = 0.5 + Math.random() * 0.3;
+        weatherEffectsEl.appendChild(cloud);
+      }
+    }
+
+    function createSunRays() {
+      for (let i = 0; i < 4; i++) {
+        const ray = document.createElement('div');
+        ray.className = 'sun-ray';
+        ray.style.left = (10 + i * 22) + '%';
+        ray.style.animationDelay = (i * 0.8) + 's';
+        ray.style.width = (60 + Math.random() * 40) + 'px';
+        weatherEffectsEl.appendChild(ray);
+      }
+    }
+
+    function createRain() {
+      for (let i = 0; i < 50; i++) {
+        const drop = document.createElement('div');
+        drop.className = 'raindrop';
+        drop.style.left = Math.random() * 100 + '%';
+        drop.style.animationDuration = (0.6 + Math.random() * 0.6) + 's';
+        drop.style.animationDelay = (-Math.random() * 2) + 's';
+        drop.style.height = (12 + Math.random() * 16) + 'px';
+        drop.style.opacity = 0.5 + Math.random() * 0.4;
+        weatherEffectsEl.appendChild(drop);
+      }
+    }
+
+    function createSnow() {
+      const flakes = ['❄', '❅', '❆', '✻', '✼'];
+      for (let i = 0; i < 45; i++) {
+        const flake = document.createElement('div');
+        flake.className = 'snowflake';
+        flake.textContent = flakes[Math.floor(Math.random() * flakes.length)];
+        flake.style.left = Math.random() * 100 + '%';
+        flake.style.fontSize = (8 + Math.random() * 16) + 'px';
+        flake.style.animationDuration = (5 + Math.random() * 6) + 's';
+        flake.style.animationDelay = (-Math.random() * 8) + 's';
+        flake.style.opacity = 0.6 + Math.random() * 0.4;
+        weatherEffectsEl.appendChild(flake);
+      }
+    }
+
+    function createBubbles() {
+      for (let i = 0; i < 25; i++) {
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        const size = 6 + Math.random() * 20;
+        bubble.style.width = size + 'px';
+        bubble.style.height = size + 'px';
+        bubble.style.left = Math.random() * 100 + '%';
+        bubble.style.bottom = '-30px';
+        bubble.style.animationDuration = (4 + Math.random() * 5) + 's';
+        bubble.style.animationDelay = (-Math.random() * 6) + 's';
+        weatherEffectsEl.appendChild(bubble);
+      }
+    }
+
+    function createSparkles() {
+      for (let i = 0; i < 20; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle-light';
+        sparkle.style.left = Math.random() * 100 + '%';
+        sparkle.style.top = (10 + Math.random() * 50) + '%';
+        sparkle.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+        sparkle.style.animationDelay = (-Math.random() * 3) + 's';
+        sparkle.style.transform = `scale(${0.6 + Math.random() * 0.8})`;
+        weatherEffectsEl.appendChild(sparkle);
+      }
+    }
+
+    function setWeather(themeKey) {
+      clearWeatherEffects();
+      switch (themeKey) {
+        case 'sunny':
+          createClouds();
+          createSunRays();
+          break;
+        case 'rainy':
+          createRain();
+          break;
+        case 'snowy':
+          createSnow();
+          break;
+        case 'pool':
+          createBubbles();
+          createSparkles();
+          break;
+      }
+    }
+
     // ========== 游戏逻辑 ==========
     function startGame(themeKey) {
       currentThemeKey = themeKey;
@@ -877,6 +1104,9 @@
       
       // 生成物品清单
       renderItemsList();
+
+      // 设置天气特效
+      setWeather(themeKey);
       
       // 切换页面
       sceneSelect.classList.add('hidden');
