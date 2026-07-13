@@ -1400,12 +1400,18 @@
       }
     }
 
-    function speakLetter(letter) {
-      if (!('speechSynthesis' in window)) return;
+    function speakLetter(letter, callback) {
+      if (!('speechSynthesis' in window)) {
+        if (callback) callback();
+        return;
+      }
       const utterance = new SpeechSynthesisUtterance(letter);
       utterance.lang = 'en-US';
       utterance.rate = 0.8;
       utterance.pitch = 1.2;
+      if (callback) {
+        utterance.onend = callback;
+      }
       speechSynthesis.speak(utterance);
     }
 
@@ -1422,21 +1428,24 @@
       speechSynthesis.speak(utterance);
     }
 
-    function playPronunciation(letter, word) {
-      if (!('speechSynthesis' in window)) return;
+    function playPronunciation(letter, word, callback) {
+      if (!('speechSynthesis' in window)) {
+        if (callback) callback();
+        return;
+      }
       speechSynthesis.cancel();
-      speakLetter(letter);
-      // 字母读完后读单词
-      setTimeout(() => {
-        speakWord(word);
-      }, 600);
+      // 先读字母，读完再读单词，单词读完执行回调
+      speakLetter(letter, () => {
+        speakWord(word, () => {
+          if (callback) callback();
+        });
+      });
     }
 
     function handleCorrect(keyBtn, item) {
       // 正确音效
       playCorrectSound();
-      // 播放发音：字母 → 单词
-      playPronunciation(item.letter, item.word);
+      
       // 按键变绿
       if (keyBtn) {
         keyBtn.classList.add('correct');
@@ -1462,26 +1471,28 @@
       const theme = themes[currentThemeKey];
       
       if (currentItemIndex >= theme.items.length) {
-        // 全部穿完，显示最终活动图
-        setTimeout(() => {
-          bunnyImg.src = theme.finalImg;
-          bunnyImg.classList.remove('pop');
-          void bunnyImg.offsetWidth;
-          bunnyImg.classList.add('pop');
-          
-          updateItemsListState();
-          
+        // 全部穿完，先播放发音，再显示最终图
+        playPronunciation(item.letter, item.word, () => {
           setTimeout(() => {
-            showCelebration();
-            isAnswering = false;
-          }, 1200);
-        }, 600);
+            bunnyImg.src = theme.finalImg;
+            bunnyImg.classList.remove('pop');
+            void bunnyImg.offsetWidth;
+            bunnyImg.classList.add('pop');
+            
+            updateItemsListState();
+            
+            setTimeout(() => {
+              showCelebration();
+              isAnswering = false;
+            }, 1200);
+          }, 300);
+        });
       } else {
-        // 切换到下一张步骤图
+        // 先切换到当前步骤图，等发音播完再进下一题
         setTimeout(() => {
-          const nextItem = theme.items[currentItemIndex - 1];
-          if (nextItem && nextItem.stepImg) {
-            bunnyImg.src = nextItem.stepImg;
+          const currentStepItem = theme.items[currentItemIndex - 1];
+          if (currentStepItem && currentStepItem.stepImg) {
+            bunnyImg.src = currentStepItem.stepImg;
             bunnyImg.classList.remove('pop');
             void bunnyImg.offsetWidth;
             bunnyImg.classList.add('pop');
@@ -1489,11 +1500,13 @@
           
           updateItemsListState();
           
-          // 下一题
-          setTimeout(() => {
-            updateQuestion();
-            isAnswering = false;
-          }, 400);
+          // 等发音播完再进入下一题
+          playPronunciation(item.letter, item.word, () => {
+            setTimeout(() => {
+              updateQuestion();
+              isAnswering = false;
+            }, 300);
+          });
         }, 500);
       }
     }
@@ -1513,8 +1526,12 @@
         speakLetter(letter);
       }
       
-      // 简单的错误提示
-      feedbackEl.textContent = '🤔';
+      // 显示错误字母提示
+      if (letter) {
+        feedbackEl.innerHTML = `<div style="font-size: 80px; font-weight: 900; color: #E74C3C; text-shadow: 3px 3px 0 #fff;">${letter.toUpperCase()}</div>`;
+      } else {
+        feedbackEl.textContent = '🤔';
+      }
       feedbackEl.classList.remove('show');
       void feedbackEl.offsetWidth;
       feedbackEl.classList.add('show');
