@@ -1463,17 +1463,29 @@
         setTimeout(() => spawnSparkle(), i * 60);
       }
       
-      // 更新进度
-      currentItemIndex++;
-      currentNumEl.textContent = currentItemIndex;
-      
-      // 更新兔子图片（显示穿上新衣服的样子）
       const theme = themes[currentThemeKey];
+      const isLastItem = currentItemIndex >= theme.items.length - 1;
       
-      if (currentItemIndex >= theme.items.length) {
-        // 全部穿完，先播放发音，再显示最终图
-        playPronunciation(item.letter, item.word, () => {
-          setTimeout(() => {
+      // 兔子马上穿上新衣服（即时视觉反馈）
+      if (!isLastItem) {
+        setTimeout(() => {
+          if (item.stepImg) {
+            bunnyImg.src = item.stepImg;
+            bunnyImg.classList.remove('pop');
+            void bunnyImg.offsetWidth;
+            bunnyImg.classList.add('pop');
+          }
+        }, 300);
+      }
+      
+      // 播放发音，等发音播完再切换到下一题（小图标和大图标同步切换）
+      playPronunciation(item.letter, item.word, () => {
+        setTimeout(() => {
+          currentItemIndex++;
+          currentNumEl.textContent = currentItemIndex;
+          
+          if (isLastItem) {
+            // 全部穿完，显示最终图
             bunnyImg.src = theme.finalImg;
             bunnyImg.classList.remove('pop');
             void bunnyImg.offsetWidth;
@@ -1485,30 +1497,13 @@
               showCelebration();
               isAnswering = false;
             }, 1200);
-          }, 300);
-        });
-      } else {
-        // 先切换到当前步骤图，等发音播完再进下一题
-        setTimeout(() => {
-          const currentStepItem = theme.items[currentItemIndex - 1];
-          if (currentStepItem && currentStepItem.stepImg) {
-            bunnyImg.src = currentStepItem.stepImg;
-            bunnyImg.classList.remove('pop');
-            void bunnyImg.offsetWidth;
-            bunnyImg.classList.add('pop');
+          } else {
+            // 小图标和问题面板同步切换到下一题
+            updateQuestion();
+            isAnswering = false;
           }
-          
-          updateItemsListState();
-          
-          // 等发音播完再进入下一题
-          playPronunciation(item.letter, item.word, () => {
-            setTimeout(() => {
-              updateQuestion();
-              isAnswering = false;
-            }, 300);
-          });
-        }, 500);
-      }
+        }, 300);
+      });
     }
 
     function handleWrong(keyBtn, letter) {
@@ -1526,9 +1521,13 @@
         speakLetter(letter);
       }
       
-      // 显示错误字母提示
+      // 显示错误字母 + 错误表情
       if (letter) {
-        feedbackEl.innerHTML = `<div style="font-size: 80px; font-weight: 900; color: #E74C3C; text-shadow: 3px 3px 0 #fff;">${letter.toUpperCase()}</div>`;
+        feedbackEl.innerHTML = `
+          <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+            <div style="font-size: 80px; font-weight: 900; color: #E74C3C; text-shadow: 3px 3px 0 #fff; line-height: 1;">${letter.toUpperCase()}</div>
+            <div style="font-size: 48px;">❌</div>
+          </div>`;
       } else {
         feedbackEl.textContent = '🤔';
       }
