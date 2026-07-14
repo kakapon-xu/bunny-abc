@@ -997,7 +997,7 @@
         nameEn: 'Little Doctor',
         emoji: '🩺',
         startImg: 'assets/doctor-start.jpg?v=2',
-        finalImg: 'assets/doctor-final-v2.jpg?v=2',
+        finalImg: 'assets/doctor-final-v3.jpg?v=3',
         celebrationEmoji: '🏥',
         celebrationText: "Let's help sick teddy!",
         items: [
@@ -1488,7 +1488,7 @@
       const isLastItem = currentItemIndex >= theme.items.length - 1;
       
       if (isLastItem) {
-        // 最后一个道具：立即显示最终图，不等发音
+        // 最后一个道具：立即显示最终图 + 庆祝动画，不等发音
         currentItemIndex++;
         currentNumEl.textContent = currentItemIndex;
         bunnyImg.src = theme.finalImg;
@@ -1496,12 +1496,15 @@
         void bunnyImg.offsetWidth;
         bunnyImg.classList.add('pop');
         updateItemsListState();
+        isAnswering = false;
         
-        // 发音完成后立即显示庆祝动画
-        playPronunciation(item.letter, item.word, () => {
+        // 300ms 后弹出庆祝（给最终图一个展示时间）
+        setTimeout(() => {
           showCelebration();
-          isAnswering = false;
-        });
+        }, 300);
+        
+        // 语音在后台播放，不阻塞任何 UI
+        playPronunciation(item.letter, item.word);
       } else {
         // 兔子马上穿上新衣服（即时视觉反馈）
         setTimeout(() => {
