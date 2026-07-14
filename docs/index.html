@@ -1487,8 +1487,23 @@
       const theme = themes[currentThemeKey];
       const isLastItem = currentItemIndex >= theme.items.length - 1;
       
-      // 兔子马上穿上新衣服（即时视觉反馈）
-      if (!isLastItem) {
+      if (isLastItem) {
+        // 最后一个道具：立即显示最终图，不等发音
+        currentItemIndex++;
+        currentNumEl.textContent = currentItemIndex;
+        bunnyImg.src = theme.finalImg;
+        bunnyImg.classList.remove('pop');
+        void bunnyImg.offsetWidth;
+        bunnyImg.classList.add('pop');
+        updateItemsListState();
+        
+        // 发音完成后立即显示庆祝动画
+        playPronunciation(item.letter, item.word, () => {
+          showCelebration();
+          isAnswering = false;
+        });
+      } else {
+        // 兔子马上穿上新衣服（即时视觉反馈）
         setTimeout(() => {
           if (item.stepImg) {
             bunnyImg.src = item.stepImg;
@@ -1496,35 +1511,18 @@
             void bunnyImg.offsetWidth;
             bunnyImg.classList.add('pop');
           }
-        }, 200); // 从300ms减到200ms，更快的视觉反馈
-      }
-      
-      // 播放发音，等发音播完再切换到下一题（小图标和大图标同步切换）
-      playPronunciation(item.letter, item.word, () => {
-        setTimeout(() => {
-          currentItemIndex++;
-          currentNumEl.textContent = currentItemIndex;
-          
-          if (isLastItem) {
-            // 全部穿完，显示最终图
-            bunnyImg.src = theme.finalImg;
-            bunnyImg.classList.remove('pop');
-            void bunnyImg.offsetWidth;
-            bunnyImg.classList.add('pop');
-            
-            updateItemsListState();
-            
-            setTimeout(() => {
-              showCelebration();
-              isAnswering = false;
-            }, 1000); // 从1200ms减到1000ms
-          } else {
-            // 小图标和问题面板同步切换到下一题
+        }, 200);
+        
+        // 播放发音，等发音播完再切换到下一题
+        playPronunciation(item.letter, item.word, () => {
+          setTimeout(() => {
+            currentItemIndex++;
+            currentNumEl.textContent = currentItemIndex;
             updateQuestion();
             isAnswering = false;
-          }
-        }, 200); // 从300ms减到200ms，减少等待
-      });
+          }, 200);
+        });
+      }
     }
 
     function handleWrong(keyBtn, letter) {
