@@ -23,8 +23,23 @@ echo "仓库: $REPO_URL"
 DEFAULT_BRANCH=$(git branch --show-current)
 echo "分支: $DEFAULT_BRANCH"
 
-# 3. 检测 GitHub Pages 来源（根目录 or /docs）
-if [ -f "docs/index.html" ] || [ -d "docs/" ]; then
+# 3. 检测 GitHub Pages 部署方式（关键！）
+# 方式A: GitHub Actions 构建（检查 .github/workflows/）
+# 方式B: 直接从仓库目录服务（根目录 or /docs）
+if [ -d ".github/workflows" ]; then
+  echo "⚠️ 检测到 GitHub Actions 工作流"
+  # 检查是否有 Vite/构建步骤
+  if grep -rl "vite build\|npm run build\|npx build" .github/workflows/ 2>/dev/null; then
+    echo "Pages 来源: 构建产物（npm run build → dist/）"
+    echo "重要：静态资源在 public/ 目录中，更新时必须同步到 public/！"
+    # 检查 public 目录
+    if [ -d "public" ]; then
+      echo "public/ 内容："
+      ls public/
+    fi
+    PAGES_SOURCE="build"
+  fi
+elif [ -f "docs/index.html" ] || [ -d "docs/" ]; then
   echo "Pages 来源: /docs 目录"
   PAGES_SOURCE="docs"
 else
@@ -47,17 +62,23 @@ echo "Pages URL: $PAGES_URL"
 
 ### 第一步：同步文件（如需要）
 
-如果项目存在多个目录需要保持一致（如开发目录和部署目录），先同步：
+**如果 PAGES_SOURCE="build"**：必须将所有静态资源同步到 `public/` 对应路径！
 
 ```bash
 cd /workspace
 
-# 根据实际项目结构同步，示例：
-# 如果有 src/ 和 docs/ 或其他镜像目录，执行同步
-# cp -r src/* docs/ 2>/dev/null || true
+# Vite 项目：public/ 的内容会被原样复制到 dist/
+# 所以所有更新必须同步到 public/ 目录
+# 示例（根据实际路径调整）：
+cp -r dress-up/ public/dress-up/
+# 或只同步变更的文件：
+cp dress-up/index.html public/dress-up/index.html
+cp dress-up/assets/*.jpg public/dress-up/assets/
 ```
 
-**判断是否需要同步**：对比 `git diff --name-only` 中涉及的目录。如果变更只在 Pages 服务目录内，则无需同步。
+**如果 PAGES_SOURCE="docs"**：同步到 docs/ 目录。
+
+**如果 PAGES_SOURCE="root"**：无需同步。
 
 ### 第二步：缓存破坏
 
