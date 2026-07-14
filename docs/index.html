@@ -1018,11 +1018,15 @@
         items: [
           { letter: 'A', word: 'Apron', wordCn: '围裙', emoji: '👩‍🍳', stepImg: 'assets/chef-step1.jpg' },
           { letter: 'C', word: 'Chef Hat', wordCn: '厨师帽', emoji: '🎩', stepImg: 'assets/chef-step2.jpg' },
-          { letter: 'P', word: 'Pan', wordCn: '平底锅', emoji: '🍳', stepImg: 'assets/chef-step3.jpg' },
-          { letter: 'T', word: 'Turner', wordCn: '锅铲', emoji: '🥄', stepImg: 'assets/chef-step4.jpg' },
-          { letter: 'S', word: 'Salt', wordCn: '盐罐', emoji: '🧂', stepImg: 'assets/chef-step5.jpg' },
-          { letter: 'B', word: 'Bowl', wordCn: '碗', emoji: '🥣', stepImg: 'assets/chef-step6.jpg' },
-          { letter: 'C', word: 'Chopsticks', wordCn: '筷子', emoji: '🥢', stepImg: 'assets/chef-step7.jpg' },
+          { letter: 'R', word: 'Rolling Pin', wordCn: '擀面杖', emoji: '🥖', stepImg: 'assets/chef-step3.jpg' },
+          { letter: 'D', word: 'Dough', wordCn: '面团', emoji: '🍞', stepImg: 'assets/chef-step4.jpg' },
+          { letter: 'O', word: 'Oven', wordCn: '烤箱', emoji: '🔥', stepImg: 'assets/chef-step5.jpg' },
+          { letter: 'P', word: 'Plate', wordCn: '盘子', emoji: '🍽️', stepImg: 'assets/chef-step6.jpg' },
+          { letter: 'B', word: 'Bread', wordCn: '面包', emoji: '🍞', stepImg: 'assets/chef-step7.jpg' },
+          { letter: 'C', word: 'Cookie', wordCn: '饼干', emoji: '🍪', stepImg: 'assets/chef-step8.jpg' },
+          { letter: 'C', word: 'Cake', wordCn: '蛋糕', emoji: '🎂', stepImg: 'assets/chef-step9.jpg' },
+          { letter: 'F', word: 'Fork', wordCn: '叉子', emoji: '🍴', stepImg: 'assets/chef-step10.jpg' },
+          { letter: 'K', word: 'Knife', wordCn: '刀', emoji: '🔪', stepImg: 'assets/chef-step11.jpg' },
         ]
       }
     };
@@ -1034,6 +1038,13 @@
     let currentItemIndex = 0;
     let isAnswering = false;
     let selectedSceneIndex = 0;
+    
+    // ========== UX 优化：错误按键防抖/节流 ==========
+    let wrongLetterDebounceTimer = null;
+    let pendingWrongLetter = null;
+    let lastWrongSoundTime = 0;
+    const WRONG_SOUND_MIN_INTERVAL = 150; // 错误音效最小间隔（ms）
+    const WRONG_LETTER_SPEAK_DELAY = 200; // 错误字母发音延迟（防抖用）
 
     // ========== DOM 元素 ==========
     const sceneSelect = document.getElementById('sceneSelect');
@@ -1400,12 +1411,18 @@
       }
     }
 
-    function speakLetter(letter) {
-      if (!('speechSynthesis' in window)) return;
+    function speakLetter(letter, callback) {
+      if (!('speechSynthesis' in window)) {
+        if (callback) callback();
+        return;
+      }
       const utterance = new SpeechSynthesisUtterance(letter);
       utterance.lang = 'en-US';
-      utterance.rate = 0.8;
+      utterance.rate = 0.9; // 从0.8调到0.9，稍快一点
       utterance.pitch = 1.2;
+      if (callback) {
+        utterance.onend = callback;
+      }
       speechSynthesis.speak(utterance);
     }
 
@@ -1416,27 +1433,37 @@
       }
       const utterance = new SpeechSynthesisUtterance(word);
       utterance.lang = 'en-US';
-      utterance.rate = 0.75;
+      utterance.rate = 0.85; // 从0.75调到0.85，稍快一点
       utterance.pitch = 1.1;
       utterance.onend = () => { if (callback) callback(); };
       speechSynthesis.speak(utterance);
     }
 
-    function playPronunciation(letter, word) {
-      if (!('speechSynthesis' in window)) return;
+    function playPronunciation(letter, word, callback) {
+      if (!('speechSynthesis' in window)) {
+        if (callback) callback();
+        return;
+      }
       speechSynthesis.cancel();
-      speakLetter(letter);
-      // 字母读完后读单词
-      setTimeout(() => {
-        speakWord(word);
-      }, 600);
+      // 先读字母，读完再读单词，单词读完执行回调
+      speakLetter(letter, () => {
+        speakWord(word, () => {
+          if (callback) callback();
+        });
+      });
     }
 
     function handleCorrect(keyBtn, item) {
+      // 立即清除错误语音防抖定时器
+      if (wrongLetterDebounceTimer) {
+        clearTimeout(wrongLetterDebounceTimer);
+        wrongLetterDebounceTimer = null;
+        pendingWrongLetter = null;
+      }
+      
       // 正确音效
       playCorrectSound();
-      // 播放发音：字母 → 单词
-      playPronunciation(item.letter, item.word);
+      
       // 按键变绿
       if (keyBtn) {
         keyBtn.classList.add('correct');
@@ -1454,48 +1481,47 @@
         setTimeout(() => spawnSparkle(), i * 60);
       }
       
-      // 更新进度
-      currentItemIndex++;
-      currentNumEl.textContent = currentItemIndex;
-      
-      // 更新兔子图片（显示穿上新衣服的样子）
       const theme = themes[currentThemeKey];
+      const isLastItem = currentItemIndex >= theme.items.length - 1;
       
-      if (currentItemIndex >= theme.items.length) {
-        // 全部穿完，显示最终活动图
+      // 兔子马上穿上新衣服（即时视觉反馈）
+      if (!isLastItem) {
         setTimeout(() => {
-          bunnyImg.src = theme.finalImg;
-          bunnyImg.classList.remove('pop');
-          void bunnyImg.offsetWidth;
-          bunnyImg.classList.add('pop');
-          
-          updateItemsListState();
-          
-          setTimeout(() => {
-            showCelebration();
-            isAnswering = false;
-          }, 1200);
-        }, 600);
-      } else {
-        // 切换到下一张步骤图
-        setTimeout(() => {
-          const nextItem = theme.items[currentItemIndex - 1];
-          if (nextItem && nextItem.stepImg) {
-            bunnyImg.src = nextItem.stepImg;
+          if (item.stepImg) {
+            bunnyImg.src = item.stepImg;
             bunnyImg.classList.remove('pop');
             void bunnyImg.offsetWidth;
             bunnyImg.classList.add('pop');
           }
+        }, 200); // 从300ms减到200ms，更快的视觉反馈
+      }
+      
+      // 播放发音，等发音播完再切换到下一题（小图标和大图标同步切换）
+      playPronunciation(item.letter, item.word, () => {
+        setTimeout(() => {
+          currentItemIndex++;
+          currentNumEl.textContent = currentItemIndex;
           
-          updateItemsListState();
-          
-          // 下一题
-          setTimeout(() => {
+          if (isLastItem) {
+            // 全部穿完，显示最终图
+            bunnyImg.src = theme.finalImg;
+            bunnyImg.classList.remove('pop');
+            void bunnyImg.offsetWidth;
+            bunnyImg.classList.add('pop');
+            
+            updateItemsListState();
+            
+            setTimeout(() => {
+              showCelebration();
+              isAnswering = false;
+            }, 1000); // 从1200ms减到1000ms
+          } else {
+            // 小图标和问题面板同步切换到下一题
             updateQuestion();
             isAnswering = false;
-          }, 400);
-        }, 500);
-      }
+          }
+        }, 200); // 从300ms减到200ms，减少等待
+      });
     }
 
     function handleWrong(keyBtn, letter) {
@@ -1504,17 +1530,43 @@
         setTimeout(() => keyBtn.classList.remove('wrong'), 400);
       }
       
-      // 错误音效
-      playWrongSound();
-      
-      // 播放错误字母的发音
-      if (letter) {
-        speechSynthesis.cancel();
-        speakLetter(letter);
+      // 错误音效（节流：避免快速按错时音效叠加）
+      const now = Date.now();
+      if (now - lastWrongSoundTime >= WRONG_SOUND_MIN_INTERVAL) {
+        playWrongSound();
+        lastWrongSoundTime = now;
       }
       
-      // 简单的错误提示
-      feedbackEl.textContent = '🤔';
+      // 错误字母发音（防抖：快速按错时只播放最后一个）
+      if (letter) {
+        // 清除之前的防抖定时器
+        if (wrongLetterDebounceTimer) {
+          clearTimeout(wrongLetterDebounceTimer);
+          wrongLetterDebounceTimer = null;
+        }
+        pendingWrongLetter = letter;
+        
+        // 设置新的防抖定时器
+        wrongLetterDebounceTimer = setTimeout(() => {
+          if (pendingWrongLetter && !isAnswering) {
+            speechSynthesis.cancel();
+            speakLetter(pendingWrongLetter);
+          }
+          pendingWrongLetter = null;
+          wrongLetterDebounceTimer = null;
+        }, WRONG_LETTER_SPEAK_DELAY);
+      }
+      
+      // 显示错误字母 + 错误表情（即时视觉反馈）
+      if (letter) {
+        feedbackEl.innerHTML = `
+          <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+            <div style="font-size: 80px; font-weight: 900; color: #E74C3C; text-shadow: 3px 3px 0 #fff; line-height: 1;">${letter.toUpperCase()}</div>
+            <div style="font-size: 48px;">❌</div>
+          </div>`;
+      } else {
+        feedbackEl.textContent = '🤔';
+      }
       feedbackEl.classList.remove('show');
       void feedbackEl.offsetWidth;
       feedbackEl.classList.add('show');
