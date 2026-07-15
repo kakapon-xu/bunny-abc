@@ -5,6 +5,7 @@ import ModeSelect from './pages/ModeSelect'
 import ExploreMode from './pages/ExploreMode'
 import ListenMode from './pages/ListenMode'
 import DressMode from './pages/DressMode'
+import DressThemeSelect from './pages/DressThemeSelect'
 import { SoundProvider } from './utils/SoundContext'
 
 function App() {
@@ -17,7 +18,8 @@ function App() {
           <Route path="/scene/:sceneId/mode" element={<ModeSelect />} />
           <Route path="/scene/:sceneId/explore" element={<ExploreMode />} />
           <Route path="/scene/:sceneId/listen" element={<ListenMode />} />
-          <Route path="/dress" element={<DressMode />} />
+          <Route path="/dress" element={<DressThemeSelect />} />
+          <Route path="/dress/:themeId" element={<DressMode />} />
         </Routes>
       </div>
     </SoundProvider>
