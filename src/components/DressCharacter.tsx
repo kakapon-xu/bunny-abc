@@ -31,7 +31,7 @@ const DressCharacter: React.FC<DressCharacterProps> = ({
   useEffect(() => {
     if (wornItems.length > 0) {
       const lastItem = wornItems[wornItems.length - 1];
-      setJustAppeared(lastItem.id);
+      setJustAppeared(lastItem.id!);
       const timer = setTimeout(() => setJustAppeared(null), 600);
       return () => clearTimeout(timer);
     }
