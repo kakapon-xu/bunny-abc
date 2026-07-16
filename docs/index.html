@@ -1069,6 +1069,25 @@
     const itemsListEl = document.getElementById('itemsList');
     const weatherEffectsEl = document.getElementById('weatherEffects');
 
+    // ========== 预加载所有图片（避免按键后等待下载）==========
+    function preloadImages() {
+      const images = new Set();
+      for (const key of themeOrder) {
+        const t = themes[key];
+        if (t.startImg) images.add(t.startImg);
+        if (t.finalImg) images.add(t.finalImg);
+        for (const item of t.items) {
+          if (item.stepImg) images.add(item.stepImg);
+        }
+      }
+      for (const src of images) {
+        const img = new Image();
+        img.src = src;
+      }
+      console.log('Preloaded', images.size, 'images');
+    }
+    preloadImages();
+
     // ========== 场景选择键盘导航 ==========
     function updateSceneSelection() {
       const cards = document.querySelectorAll('.scene-card');
@@ -1504,6 +1523,7 @@
         });
       } else {
         // 兔子马上穿上新衣服（即时视觉反馈）
+        // 图片已预加载，立即切换
         setTimeout(() => {
           if (item.stepImg) {
             bunnyImg.src = item.stepImg;
@@ -1511,7 +1531,7 @@
             void bunnyImg.offsetWidth;
             bunnyImg.classList.add('pop');
           }
-        }, 200);
+        }, 50);
         
         // 播放发音，等发音播完再切换到下一题
         playPronunciation(item.letter, item.word, () => {
