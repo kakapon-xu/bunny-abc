@@ -1069,24 +1069,24 @@
     const itemsListEl = document.getElementById('itemsList');
     const weatherEffectsEl = document.getElementById('weatherEffects');
 
-    // ========== 预加载所有图片（避免按键后等待下载）==========
-    function preloadImages() {
-      const images = new Set();
-      for (const key of themeOrder) {
-        const t = themes[key];
-        if (t.startImg) images.add(t.startImg);
-        if (t.finalImg) images.add(t.finalImg);
-        for (const item of t.items) {
-          if (item.stepImg) images.add(item.stepImg);
-        }
-      }
-      for (const src of images) {
-        const img = new Image();
-        img.src = src;
-      }
-      console.log('Preloaded', images.size, 'images');
+    // ========== 按主题预加载图片（避免一次性加载 53 张拖慢手机）==========
+    const preloadedThemes = new Set();
+    function preloadTheme(themeKey) {
+      if (preloadedThemes.has(themeKey)) return;
+      preloadedThemes.add(themeKey);
+      const t = themes[themeKey];
+      const imgs = [t.startImg, t.finalImg, ...t.items.map(i => i.stepImg)].filter(Boolean);
+      imgs.forEach(src => { const img = new Image(); img.src = src; });
+      console.log('Preloaded theme:', themeKey, '(' + imgs.length + ' images)');
     }
-    preloadImages();
+    // 首屏只预加载当前主题
+    preloadTheme('sunny');
+    // 后台低优先级预加载其余主题（不抢带宽）
+    requestIdleCallback?.(() => {
+      themeOrder.forEach(key => preloadTheme(key));
+    }) || setTimeout(() => {
+      themeOrder.forEach(key => preloadTheme(key));
+    }, 3000);
 
     // ========== 场景选择键盘导航 ==========
     function updateSceneSelection() {
@@ -1296,6 +1296,9 @@
 
       // 设置天气特效
       setWeather(themeKey);
+      
+      // 立即预加载当前主题图片
+      preloadTheme(themeKey);
       
       // 切换页面
       sceneSelect.classList.add('hidden');
