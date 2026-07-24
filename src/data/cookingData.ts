@@ -29,8 +29,8 @@ export const noodleRecipe: CookingRecipe = {
   finalImage: './cooking/noodle-final.jpg',
   steps: [
     {
-      letter: 'F', word: 'Flour', wordCn: '面粉', emoji: '🌾',
-      action: 'Add flour', actionEmoji: '➕🌾', image: './cooking/noodle-step1.jpg',
+      letter: 'F', word: 'Flour', wordCn: '面粉', emoji: '🫓',
+      action: 'Add flour', actionEmoji: '➕🫓', image: './cooking/noodle-step1.jpg',
     },
     {
       letter: 'W', word: 'Water', wordCn: '水', emoji: '💧',
@@ -41,8 +41,8 @@ export const noodleRecipe: CookingRecipe = {
       action: 'Mix it up', actionEmoji: '🥄🔄', image: './cooking/noodle-step3.jpg',
     },
     {
-      letter: 'R', word: 'Roll', wordCn: '擀面', emoji: '🫓',
-      action: 'Roll it flat', actionEmoji: '圆柱→🫓', image: './cooking/noodle-step4.jpg',
+      letter: 'R', word: 'Roll', wordCn: '擀面', emoji: '🥖',
+      action: 'Roll it flat', actionEmoji: '🥖➡️🫓', image: './cooking/noodle-step4.jpg',
     },
     {
       letter: 'C', word: 'Cut', wordCn: '切面', emoji: '🔪',
