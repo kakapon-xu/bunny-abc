@@ -29,8 +29,8 @@ export const noodleRecipe: CookingRecipe = {
   finalImage: './cooking/noodle-final.jpg',
   steps: [
     {
-      letter: 'F', word: 'Flour', wordCn: '面粉', emoji: '🫓',
-      action: 'Add flour', actionEmoji: '➕🫓', image: './cooking/noodle-step1.jpg',
+      letter: 'F', word: 'Flour', wordCn: '面粉', emoji: '🛍️',
+      action: 'Add flour', actionEmoji: '➕🛍️', image: './cooking/noodle-step1.jpg',
     },
     {
       letter: 'W', word: 'Water', wordCn: '水', emoji: '💧',
