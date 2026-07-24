@@ -83,6 +83,10 @@
   border-left: 6px solid var(--color-secondary);
 }
 
+.mode-btn-cook {
+  border-left: 6px solid #f59e0b;
+}
+
 @media (min-width: 768px) {
   .mode-scene-emoji { font-size: 48px; }
   .mode-scene-title h2 { font-size: 28px; }

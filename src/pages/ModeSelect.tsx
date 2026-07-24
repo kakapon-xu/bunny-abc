@@ -47,6 +47,17 @@ function ModeSelect() {
             <div className="mode-btn-title">Find it!</div>
             <div className="mode-btn-desc">Listen and find the letter</div>
           </button>
+
+          {sceneId === 'kitchen' && (
+            <button
+              className="mode-btn mode-btn-cook"
+              onClick={() => navigate('/cook')}
+            >
+              <div className="mode-btn-icon">🍜</div>
+              <div className="mode-btn-title">Cook</div>
+              <div className="mode-btn-desc">做一碗手工面条!</div>
+            </button>
+          )}
         </div>
       </div>
     </div>
