@@ -3,8 +3,9 @@ export interface CookingStep {
   letter: string        // 按键字母
   word: string          // 英文单词
   wordCn: string        // 中文
-  emoji: string         // 道具图标
+  emoji: string         // 道具/物品图标
   action: string        // 动作词组（语音播报用）
+  actionEmoji: string   // 动作示意图标
   image: string         // 步骤图片路径
 }
 
@@ -29,27 +30,27 @@ export const noodleRecipe: CookingRecipe = {
   steps: [
     {
       letter: 'F', word: 'Flour', wordCn: '面粉', emoji: '🌾',
-      action: 'Add flour', image: './cooking/noodle-step1.jpg',
+      action: 'Add flour', actionEmoji: '➕🌾', image: './cooking/noodle-step1.jpg',
     },
     {
       letter: 'W', word: 'Water', wordCn: '水', emoji: '💧',
-      action: 'Add water', image: './cooking/noodle-step2.jpg',
+      action: 'Add water', actionEmoji: '➕💧', image: './cooking/noodle-step2.jpg',
     },
     {
-      letter: 'M', word: 'Mix', wordCn: '搅拌', emoji: '👐',
-      action: 'Mix it up', image: './cooking/noodle-step3.jpg',
+      letter: 'M', word: 'Mix', wordCn: '搅拌', emoji: '🥣',
+      action: 'Mix it up', actionEmoji: '🥄🔄', image: './cooking/noodle-step3.jpg',
     },
     {
-      letter: 'R', word: 'Roll', wordCn: '擀面', emoji: '🍥',
-      action: 'Roll it flat', image: './cooking/noodle-step4.jpg',
+      letter: 'R', word: 'Roll', wordCn: '擀面', emoji: '🫓',
+      action: 'Roll it flat', actionEmoji: '圆柱→🫓', image: './cooking/noodle-step4.jpg',
     },
     {
       letter: 'C', word: 'Cut', wordCn: '切面', emoji: '🔪',
-      action: 'Cut the dough', image: './cooking/noodle-step5.jpg',
+      action: 'Cut the dough', actionEmoji: '🔪面条', image: './cooking/noodle-step5.jpg',
     },
     {
-      letter: 'B', word: 'Boil', wordCn: '煮面', emoji: '🔥',
-      action: 'Boil noodles', image: './cooking/noodle-step6.jpg',
+      letter: 'B', word: 'Boil', wordCn: '煮面', emoji: '🍲',
+      action: 'Boil noodles', actionEmoji: '🔥🍲', image: './cooking/noodle-step6.jpg',
     },
   ],
 }

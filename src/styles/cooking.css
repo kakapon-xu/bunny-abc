@@ -55,14 +55,14 @@
 .cook-question {
   background: white;
   border-radius: 20px;
-  padding: 16px 28px;
+  padding: 16px 24px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  min-width: 200px;
+  gap: 8px;
+  min-width: 240px;
   transition: transform 0.2s ease;
 }
 
@@ -91,29 +91,70 @@
   100% { transform: scale(1); }
 }
 
+/* 题目主体：图标 + 字母/单词 */
+.cook-question-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cook-question-emoji {
+  font-size: 56px;
+  line-height: 1;
+  flex-shrink: 0;
+  animation: emojiBounce 0.6s ease;
+}
+
+@keyframes emojiBounce {
+  0% { transform: scale(0) rotate(-180deg); }
+  60% { transform: scale(1.2) rotate(10deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.cook-question-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
 .cook-question-letter {
-  font-size: 48px;
+  font-size: 44px;
   font-weight: 900;
   color: var(--color-primary);
   line-height: 1;
 }
 
 .cook-question-word {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--color-text);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
 }
 
 .cook-question-cn {
   font-size: 14px;
   color: var(--color-text-muted);
+  font-weight: 500;
 }
 
+/* 动作行 */
 .cook-question-action {
   font-size: 14px;
   color: var(--color-primary);
   font-weight: 600;
-  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-primary-bg, #fff0f5);
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+.cook-action-emoji {
+  font-size: 18px;
 }
 
 /* 进度条 */
@@ -318,11 +359,14 @@
   .cook-bowl {
     max-width: 400px;
   }
+  .cook-question-emoji {
+    font-size: 64px;
+  }
   .cook-question-letter {
-    font-size: 60px;
+    font-size: 56px;
   }
   .cook-question-word {
-    font-size: 28px;
+    font-size: 26px;
   }
   .cook-progress-dot {
     width: 18px;

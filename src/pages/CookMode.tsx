@@ -189,11 +189,19 @@ function CookMode() {
             alt={currentStepData.wordCn}
           />
           <div className={`cook-question ${feedbackType === 'correct' ? 'correct' : ''} ${feedbackType === 'wrong' ? 'wrong' : ''}`}>
-            <div className="cook-question-letter">{currentStepData.letter}</div>
-            <div className="cook-question-word">
-              {currentStepData.word} <span style={{ fontSize: '14px' }}>{currentStepData.wordCn}</span>
+            <div className="cook-question-main">
+              <div className="cook-question-emoji">{currentStepData.emoji}</div>
+              <div className="cook-question-info">
+                <div className="cook-question-letter">{currentStepData.letter}</div>
+                <div className="cook-question-word">
+                  {currentStepData.word} <span className="cook-question-cn">{currentStepData.wordCn}</span>
+                </div>
+              </div>
             </div>
-            <div className="cook-question-action">{currentStepData.action}</div>
+            <div className="cook-question-action">
+              <span className="cook-action-emoji">{currentStepData.actionEmoji}</span>
+              {currentStepData.action}
+            </div>
           </div>
           <div className="cook-feedback show">
             {feedbackType === 'correct' && '✅'}
