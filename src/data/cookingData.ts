@@ -24,32 +24,32 @@ export const noodleRecipe: CookingRecipe = {
   name: '手工面条',
   nameEn: 'Handmade Noodles',
   emoji: '🍜',
-  startImage: './cooking/noodle-start.svg',
-  finalImage: './cooking/noodle-final.svg',
+  startImage: './cooking/noodle-start.jpg',
+  finalImage: './cooking/noodle-final.jpg',
   steps: [
     {
       letter: 'F', word: 'Flour', wordCn: '面粉', emoji: '🌾',
-      action: 'Add flour', image: './cooking/noodle-step1.svg',
+      action: 'Add flour', image: './cooking/noodle-step1.jpg',
     },
     {
       letter: 'W', word: 'Water', wordCn: '水', emoji: '💧',
-      action: 'Add water', image: './cooking/noodle-step2.svg',
+      action: 'Add water', image: './cooking/noodle-step2.jpg',
     },
     {
       letter: 'M', word: 'Mix', wordCn: '搅拌', emoji: '👐',
-      action: 'Mix it up', image: './cooking/noodle-step3.svg',
+      action: 'Mix it up', image: './cooking/noodle-step3.jpg',
     },
     {
       letter: 'R', word: 'Roll', wordCn: '擀面', emoji: '🍥',
-      action: 'Roll it flat', image: './cooking/noodle-step4.svg',
+      action: 'Roll it flat', image: './cooking/noodle-step4.jpg',
     },
     {
       letter: 'C', word: 'Cut', wordCn: '切面', emoji: '🔪',
-      action: 'Cut the dough', image: './cooking/noodle-step5.svg',
+      action: 'Cut the dough', image: './cooking/noodle-step5.jpg',
     },
     {
       letter: 'B', word: 'Boil', wordCn: '煮面', emoji: '🔥',
-      action: 'Boil noodles', image: './cooking/noodle-step6.svg',
+      action: 'Boil noodles', image: './cooking/noodle-step6.jpg',
     },
   ],
 }
